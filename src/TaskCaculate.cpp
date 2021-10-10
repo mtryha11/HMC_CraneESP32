@@ -590,7 +590,7 @@ void Task_Caculate_code( void * pvParameters )
     }
     // Serial.print("Task calculate running on: ");
     // Serial.println(xPortGetCoreID());
-    vTaskDelay(200);
+    vTaskDelay(400);
   }
 }
 

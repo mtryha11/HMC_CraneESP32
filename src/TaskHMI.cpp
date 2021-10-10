@@ -228,7 +228,14 @@ void Task_HMI_code( void * pvParameters )
 
             Float_to_Register(Angle_value,1,2);
             Float_to_Register(Length_value,3,4);
-            Float_to_Register(W_value,5,6);
+            if(W_value<0)
+            {
+                Float_to_Register(0-W_value,5,6);
+            }
+            else
+            {
+                Float_to_Register(W_value,5,6);
+            }
             Float_to_Register(MaxW_value,7,8);
             Word_to_Register(Cab_number,9);
             //Word_to_Register(Load_stt,10);
@@ -335,7 +342,16 @@ void Task_HMI_code( void * pvParameters )
 
             Float_to_Register(Angle_value,1,2);
             Float_to_Register(Length_value,3,4);
-            Float_to_Register(W_value,5,6);
+
+            if(W_value<0)
+            {
+                Float_to_Register(0-W_value,5,6);
+            }
+            else
+            {
+                Float_to_Register(W_value,5,6);
+            }
+
             Float_to_Register(MaxW_value,7,8);
             Word_to_Register(Cab_number,9);
             Float_to_Register(R_value,11,12);
@@ -1245,6 +1261,6 @@ void Task_HMI_code( void * pvParameters )
     // Serial.print("Task HMI running on: ");
     // Serial.println(xPortGetCoreID());
     digitalWrite(Led1, !digitalRead(Led1));
-    vTaskDelay(200);
+    vTaskDelay(300);
   } 
 }
