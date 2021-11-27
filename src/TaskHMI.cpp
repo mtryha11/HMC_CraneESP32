@@ -982,6 +982,7 @@ void Task_HMI_code( void * pvParameters )
                     temp[1]=node.getResponseBuffer(1);
                     node.clearResponseBuffer();
                     Loadcell1_value_calib0=bytesToFloat(&temp[0]);
+                    Loadcell1_value_calib0=Loadcell1_value_calib0/Cab_main_number;
                     Loadcell1_raw_calib0=Loadcell1_raw;
                     preferences.putFloat("Load1",Loadcell1_value_calib0);
                     preferences.putUInt("Load5",Loadcell1_raw_calib0);
@@ -1001,6 +1002,7 @@ void Task_HMI_code( void * pvParameters )
                     temp[1]=node.getResponseBuffer(1);
                     node.clearResponseBuffer();
                     Loadcell1_value_calib1=bytesToFloat(&temp[0]);
+                    Loadcell1_value_calib1=Loadcell1_value_calib1/Cab_main_number;
                     Loadcell1_raw_calib1=Loadcell1_raw;
                     preferences.putFloat("Load2",Loadcell1_value_calib1);
                     preferences.putUInt("Load6",Loadcell1_raw_calib1);
@@ -1020,6 +1022,7 @@ void Task_HMI_code( void * pvParameters )
                     temp[1]=node.getResponseBuffer(1);
                     node.clearResponseBuffer();
                     Loadcell2_value_calib0=bytesToFloat(&temp[0]);
+                    Loadcell2_value_calib0=Loadcell2_value_calib0/Cab_aux_number;
                     Loadcell2_raw_calib0=Loadcell2_raw;
                     preferences.putFloat("Load3",Loadcell2_value_calib0);
                     preferences.putUInt("Load7",Loadcell2_raw_calib0);
@@ -1039,6 +1042,7 @@ void Task_HMI_code( void * pvParameters )
                     temp[1]=node.getResponseBuffer(1);
                     node.clearResponseBuffer();
                     Loadcell2_value_calib1=bytesToFloat(&temp[0]);
+                    Loadcell2_value_calib1=Loadcell2_value_calib1/Cab_aux_number;
                     Loadcell2_raw_calib1=Loadcell2_raw;
                     preferences.putFloat("Load4",Loadcell2_value_calib1);
                     preferences.putUInt("Load8",Loadcell2_raw_calib1);
