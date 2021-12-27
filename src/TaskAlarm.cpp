@@ -117,13 +117,13 @@ digitalWrite(Pin_LoadSet,LOW);
         Stt_LoadSet=0;
         Load_stt=0;
       }
-      else if((Loadpercent>=Load_alarm_set) && (Loadpercent<Load_alarm_max))
+      else if((Loadpercent>=Load_alarm_set) && (Loadpercent<(Load_alarm_max-0.1)))
       {
         Stt_LoadHi=0;
         Stt_LoadSet=1;
         Load_stt=1;
       }
-      else
+      else if(Loadpercent>=(Load_alarm_max-0.1))
       {
         Stt_LoadHi=1;
         Stt_LoadSet=0;

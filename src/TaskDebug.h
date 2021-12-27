@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-//#define DEBUG_VALUE
+// #define DEBUG_VALUE
 extern const uint8_t Led1;
 extern uint8_t result_comunication_HMI;
 extern float Angle_value; 

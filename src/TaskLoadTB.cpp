@@ -10,6 +10,8 @@ ModbusRTU Napbangtai;
 
 uint8_t pos=0;
 float val=1.2;
+bool ADS_Type;
+
 void Task_LoadTB_code( void * pvParameters )
 {
   preferences.begin("HMC", false);
@@ -19,6 +21,11 @@ void Task_LoadTB_code( void * pvParameters )
   {
     device_type=1;
   }
+
+  //preferences.putBool("ADS_Type",0);
+  
+  ADS_Type=  preferences.getBool("ADS_Type",0);
+
   Multi_Loadtable_State=  preferences.getBool("LTB_state",0);
   Angle_value_calib0=     preferences.getFloat("A1",0);
   Angle_raw_calib0=       preferences.getShort("A3",0);
@@ -100,9 +107,6 @@ void Task_LoadTB_code( void * pvParameters )
   Taiphantram_85=         preferences.getUInt("Taiphantram_85",100);
   Taiphantram_90=         preferences.getUInt("Taiphantram_90",100);
 
-
-
-
   Length_value=Length_xich_nhap;
   if(Multi_Loadtable_State==1)
   {
@@ -127,7 +131,10 @@ void Task_LoadTB_code( void * pvParameters )
   Trigger_LT=1;
 
   Serial.begin(115200, SERIAL_8N1);
-
+  Serial.print("Taiphantram_05: ");Serial.println(Taiphantram_05);
+  Serial.print("Taiphantram_10: ");Serial.println(Taiphantram_10);
+  Serial.print("Taiphantram_15: ");Serial.println(Taiphantram_15);
+  Serial.print("Taiphantram_20: ");Serial.println(Taiphantram_20);
   Serial.print("NVS "); Serial.println(preferences.freeEntries());
   Serial.print("So hang: ");Serial.println(Sohang);
   Serial.print("So cot: ");Serial.println(Socot);
@@ -242,7 +249,13 @@ void Task_LoadTB_code( void * pvParameters )
     {
       uint16_t temp;
       temp=Load_table_value*100;
-      if(temp==Doitrong[1])
+      if(temp==Doitrong[0]) // 
+      {
+        preferences.getBytes("Bangtai_1",LT,(2*Sohang*Socot));
+        Serial.println("Load Bang 1 - Mac dinh");
+        Stt=1;
+      }
+      else if(temp==Doitrong[1])
       {
         preferences.getBytes("Bangtai_2",LT,(2*Sohang*Socot));
         Serial.println("Load Bang 2");
@@ -296,12 +309,7 @@ void Task_LoadTB_code( void * pvParameters )
         Serial.println("Load Bang 10");
         Stt=10;
       }
-      else // temp=Doitrong[0]
-      {
-        preferences.getBytes("Bangtai_1",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 1 - Mac dinh");
-        Stt=1;
-      }
+
       
       for(uint8_t i=0;i<Sohang;i++) // Show bang tai
       {

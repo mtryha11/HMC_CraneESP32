@@ -618,10 +618,10 @@ if((Length_value <(LT[Socot-1]*0.01f)) && ((R_value <(LT[Socot*(Sohang-1)]*0.01f
 				if(W_value>0) 
 				{
 					Loadpercent=(uint16_t)(W_value/MaxW_value*100);
-					// if(Loadpercent>100) 
-					// {
-					// 	Loadpercent=100;
-					// }
+					if(Loadpercent>100) 
+					{
+						Loadpercent=100;
+					}
 				} 
 				else 
 				{
@@ -651,83 +651,93 @@ float CalculateMaxWe()
   //  Serial.print("R: "); Serial.print(R_value,2);
   //  Serial.println();
 
-   for(i=0;i<Socot;i++)
-   {
-    // Serial.print("Lengthd: "); Serial.print(Lengthd); Serial.print(" - ");
-    // Serial.print("LT: "); Serial.print(LT[i]); Serial.println();
-      if(Lengthd==(LT[i]))
+    if(Lengthd < (LT[1]))
+    {
+      if(Lengthd > (LT[1]-20))
       {
-        x1=i;
-        x2=i;
-        break;
-      }
-      else
-      if(Lengthd<(LT[1]))
-      {
-        x1=0;
+        x1=1;
         x2=1;
-        // Serial.println("Dai can nho hon bang tai");
-        cpS=2;
-        return(0);
-        break;
       }
       else
-      if(((LT[i]) < Lengthd) && (Lengthd < (LT[i+1])))
       {
-        x1=i;
-        x2=i+1;
-        break;
+        Serial.println("Dai can nho hon bang tai");
+        return(0);
       }
-      else
-      if(Lengthd > (LT[Socot-1]))
+    }
+    else if(Lengthd > (LT[Socot-1]))
+    {
+      if(Lengthd < (LT[Socot-1]+20))
       {
         x1=Socot-1;
-			  x2=Socot;
-        // Serial.println("Dai can lon hon bang tai");
-        cpS=3;
-        return(0);
-			  break;
-      }
-   }
-   
-   for(i=0;i<=Sohang;i++)
-   {  
-      // Serial.print("Radiusd: "); Serial.print(Radiusd); Serial.print(" - ");
-      // Serial.print("LT: "); Serial.print(LT[i*Socot]); Serial.println();
-      if(Radiusd == (LT[i*Socot]))
-      {
-        y1=i;
-        y2=i;
-        break;
+		    x2=Socot-1;
       }
       else
-      if(Radiusd < (LT[1*Socot]) )
       {
-        y1=0;
+        Serial.println("Dai can lon hon bang tai");
+        return(0);
+      }
+    }
+    else
+    {
+      for(i=1;i<Socot;i++)
+      {
+        // Serial.print("Lengthd: "); Serial.print(Lengthd); Serial.print(" - ");
+        // Serial.print("LT: "); Serial.print(LT[i]); Serial.println();
+          if(Lengthd==(LT[i]))
+          {
+            x1=i;
+            x2=i;
+            break;
+          } 
+          else if(((LT[i]) < Lengthd) && (Lengthd < (LT[i+1])))
+          {
+            x1=i;
+            x2=i+1;
+            break;
+          }
+      }
+    }
+
+    if(Radiusd < (LT[1*Socot]) )
+    {
+      if(Radiusd > (LT[1*Socot]-20))
+      {
+        y1=1;
         y2=1;
-        // Serial.println("Tam voi nho hon bang tai");
-        cpS=4;
-        return(0);
-        break;
       }
-      else
-      if(((LT[i*Socot]) < Radiusd) && (Radiusd < (LT[(i+1)*Socot])))
-      {
-        y1=i;
-        y2=i+1;
-        break;
-      }
-      else
-      if(Radiusd > ((LT[(Sohang-1)*Socot])) )
+      Serial.println("Tam voi nho hon bang tai");
+      return(0);
+    }
+    else if(Radiusd > ((LT[(Sohang-1)*Socot])))
+    {
+      if(Radiusd < ((LT[(Sohang-1)*Socot])+20))
       {
         y1=Sohang-1;
-				y2=Sohang;
-        // Serial.println("Tam voi lon hon bang tai");
-        cpS=5;
-        return(0);
-				break;
+        y2=Sohang-1;
       }
-   }
+      Serial.println("Tam voi lon hon bang tai");
+      return(0);
+    }
+    else
+    {
+      for(i=0;i<=Sohang;i++)
+      {  
+         // Serial.print("Radiusd: "); Serial.print(Radiusd); Serial.print(" - ");
+         // Serial.print("LT: "); Serial.print(LT[i*Socot]); Serial.println();
+         if(Radiusd == (LT[i*Socot]))
+         {
+           y1=i;
+           y2=i;
+           break;
+         }
+         else if(((LT[i*Socot]) < Radiusd) && (Radiusd < (LT[(i+1)*Socot])))
+         {
+           y1=i;
+           y2=i+1;
+           break;
+         }
+      }
+    }
 
   // Serial.print("x1:"); Serial.print(x1); Serial.print(" - ");
   // Serial.print("x2:"); Serial.print(x2); Serial.print(" - ");
@@ -738,6 +748,7 @@ float CalculateMaxWe()
   PA2=(y1*Socot+x2);
   PA3=(y2*Socot+x1);
   PA4=(y2*Socot+x2);
+  
   // Serial.print("LT"); Serial.print(PA1); Serial.print(": "); Serial.print(LT[PA1]); Serial.print(" - ");
   // Serial.print("LT"); Serial.print(PA2); Serial.print(": "); Serial.print(LT[PA2]); Serial.print(" - ");
   // Serial.print("LT"); Serial.print(PA3); Serial.print(": "); Serial.print(LT[PA3]); Serial.print(" - ");

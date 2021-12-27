@@ -24,9 +24,11 @@ bool is_rom_init_ok=0;
 HX711 scale1;
 HX711 scale2;
 
+extern bool ADS_Type;
 int16_t adc1, adc2, adc3, adc4, adc5, adc6, adc7, adc8;
 float volts1, volts2, volts3, volts4, volts5, volts6, volts7, volts8;
 uint16_t addr=0;
+long long timesensor=0;
 
 void Task_Sensor_code( void * pvParameters )
 {
@@ -37,7 +39,15 @@ void Task_Sensor_code( void * pvParameters )
   scale1.begin(LOADCELL1_DOUT_PIN, LOADCELL1_SCK_PIN);
   scale2.begin(LOADCELL2_DOUT_PIN, LOADCELL2_SCK_PIN);
 
-  Wire.setPins(22,21);
+  if(ADS_Type==1)
+  {
+    Wire.setPins(21,22);
+  }
+  else
+  {
+    Wire.setPins(22,21);
+  }
+  
   Wire.setClock(100000);
 
   if (ads1.begin(0x48)) 
@@ -66,30 +76,36 @@ void Task_Sensor_code( void * pvParameters )
   {
     ReadLoadcell1();
     ReadLoadcell2();
+    //Loadcell1_raw=Loadcell2_raw;
     ReadInput();
     ReadADS1();
     ReadADS2();
 
-    // Serial.print("\t| Loadcell 1:\t");
-    // Serial.println(Loadcell1_raw);
-    // Serial.print("\t| Loadcell 2:\t");
-    // Serial.println(Loadcell2_raw);
+    if(millis()-timesensor>5000)
+    {
 
-    // Serial.println("--------------------------------------------");
-    // Serial.print("Length_raw: ");  Serial.print(Length_raw);  Serial.println("adc");
-    // Serial.print("Angle_raw: ");   Serial.print(Angle_raw);   Serial.println("adc");
-    // Serial.print("P1_raw: ");      Serial.print(P1_raw);      Serial.println("mV");
-    // Serial.print("P2_raw: ");      Serial.print(P2_raw);      Serial.println("mV");
-    // Serial.print("P3_raw: ");      Serial.print(P3_raw);      Serial.println("mV");
-    // Serial.print("P4_raw: ");      Serial.print(P4_raw);      Serial.println("mV");
-    // Serial.print("P5_raw: ");      Serial.print(P5_raw);      Serial.println("mV");
-    // Serial.print("uc_Voltage: ");  Serial.print(uc_Voltage);  Serial.println("V");
-
+      Serial.print("\t| Loadcell 1:\t");
+      Serial.println(Loadcell1_raw);
+      Serial.print("\t| Loadcell 2:\t");
+      Serial.println(Loadcell2_raw);
+      Serial.println("--------------------------------------------");
+      Serial.print("ADS_Type: ");  Serial.println(ADS_Type);
+      Serial.print("Length_raw: ");  Serial.print(Length_raw);  Serial.println("adc");
+      Serial.print("Angle_raw: ");   Serial.print(Angle_raw);   Serial.println("adc");
+      Serial.print("P1_raw: ");      Serial.print(P1_raw);      Serial.println("mV");
+      Serial.print("P2_raw: ");      Serial.print(P2_raw);      Serial.println("mV");
+      Serial.print("P3_raw: ");      Serial.print(P3_raw);      Serial.println("mV");
+      Serial.print("P4_raw: ");      Serial.print(P4_raw);      Serial.println("mV");
+      Serial.print("P5_raw: ");      Serial.print(P5_raw);      Serial.println("mV");
+      Serial.print("uc_Voltage: ");  Serial.print(uc_Voltage);  Serial.println("V");
+      timesensor=millis();
+    }
+    
     // Serial.print("Mem 0: "); Serial.println(eeprom.read_1_byte(0));
     // Serial.print("Mem 1: "); Serial.println(eeprom.read_1_byte(1));
     // Serial.print("Mem 2: "); Serial.println(eeprom.read_1_byte(2));
 
-    vTaskDelay(100);
+    vTaskDelay(50);
   }
 }
 
@@ -102,10 +118,14 @@ void ReadADS1()
     tmp2 = ads1.readADC_SingleEnded(1);
     tmp3 = ads1.computeVolts(ads1.readADC_SingleEnded(2)) * 1000;
     tmp4 = ads1.computeVolts(ads1.readADC_SingleEnded(3)) * 1000;
-    if(tmp1!=0) Length_raw = tmp1;
-    if(tmp2!=0) Angle_raw = tmp2;
-    if(tmp3!=0) P1_raw = tmp3;
-    if(tmp4!=0) P2_raw = tmp4;
+    // if(tmp1!=0) 
+    Length_raw = tmp1;
+    // if(tmp2!=0) 
+    Angle_raw = tmp2;
+    // if(tmp3!=0) 
+    P1_raw = tmp3;
+    // if(tmp4!=0) 
+    P2_raw = tmp4;
   }
   else
   {
@@ -125,10 +145,14 @@ void ReadADS2()
     tmp2 = ads2.computeVolts(ads2.readADC_SingleEnded(1));
     tmp3 = ads2.computeVolts(ads2.readADC_SingleEnded(2)) * 1000;
     tmp4 = ads2.computeVolts(ads2.readADC_SingleEnded(3)) * 1000;
-    if(tmp1!=0) P5_raw = tmp1;
-    if(tmp2!=0) uc_Voltage = tmp2;
-    if(tmp3!=0) P3_raw = tmp3;
-    if(tmp4!=0) P4_raw = tmp4;
+    // if(tmp1!=0) 
+    P5_raw = tmp1;
+    // if(tmp2!=0) 
+    uc_Voltage = tmp2;
+    // if(tmp3!=0) 
+    P3_raw = tmp3;
+    // if(tmp4!=0) 
+    P4_raw = tmp4;
   }
   else
   {
