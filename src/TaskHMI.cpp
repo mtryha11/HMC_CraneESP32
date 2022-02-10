@@ -1213,24 +1213,45 @@ void Task_HMI_code( void * pvParameters )
                         temp[i]=node.getResponseBuffer(i);
                     }
                     node.clearResponseBuffer();
-                    Taiphantram_05=bytesToFloat(&temp[0]);
-                    Taiphantram_10=bytesToFloat(&temp[1]);
-                    Taiphantram_15=bytesToFloat(&temp[2]);
-                    Taiphantram_20=bytesToFloat(&temp[3]);
-                    Taiphantram_25=bytesToFloat(&temp[4]);
-                    Taiphantram_30=bytesToFloat(&temp[5]);
-                    Taiphantram_35=bytesToFloat(&temp[6]);
-                    Taiphantram_40=bytesToFloat(&temp[7]);
-                    Taiphantram_45=bytesToFloat(&temp[8]);
-                    Taiphantram_50=bytesToFloat(&temp[9]);
-                    Taiphantram_55=bytesToFloat(&temp[10]);
-                    Taiphantram_60=bytesToFloat(&temp[11]);
-                    Taiphantram_65=bytesToFloat(&temp[12]);
-                    Taiphantram_70=bytesToFloat(&temp[13]);
-                    Taiphantram_75=bytesToFloat(&temp[14]);
-                    Taiphantram_80=bytesToFloat(&temp[15]);
-                    Taiphantram_85=bytesToFloat(&temp[16]);
-                    Taiphantram_90=bytesToFloat(&temp[17]);
+                    node.getResponseBuffer(0);
+                    // Taiphantram_05=bytesToFloat(&temp[0]);
+                    // Taiphantram_10=bytesToFloat(&temp[1]);
+                    // Taiphantram_15=bytesToFloat(&temp[2]);
+                    // Taiphantram_20=bytesToFloat(&temp[3]);
+                    // Taiphantram_25=bytesToFloat(&temp[4]);
+                    // Taiphantram_30=bytesToFloat(&temp[5]);
+                    // Taiphantram_35=bytesToFloat(&temp[6]);
+                    // Taiphantram_40=bytesToFloat(&temp[7]);
+                    // Taiphantram_45=bytesToFloat(&temp[8]);
+                    // Taiphantram_50=bytesToFloat(&temp[9]);
+                    // Taiphantram_55=bytesToFloat(&temp[10]);
+                    // Taiphantram_60=bytesToFloat(&temp[11]);
+                    // Taiphantram_65=bytesToFloat(&temp[12]);
+                    // Taiphantram_70=bytesToFloat(&temp[13]);
+                    // Taiphantram_75=bytesToFloat(&temp[14]);
+                    // Taiphantram_80=bytesToFloat(&temp[15]);
+                    // Taiphantram_85=bytesToFloat(&temp[16]);
+                    // Taiphantram_90=bytesToFloat(&temp[17]);
+
+                    Taiphantram_05=temp[0];
+                    Taiphantram_10=temp[1];
+                    Taiphantram_15=temp[2];
+                    Taiphantram_20=temp[3];
+                    Taiphantram_25=temp[4];
+                    Taiphantram_30=temp[5];
+                    Taiphantram_35=temp[6];
+                    Taiphantram_40=temp[7];
+                    Taiphantram_45=temp[8];
+                    Taiphantram_50=temp[9];
+                    Taiphantram_55=temp[10];
+                    Taiphantram_60=temp[11];
+                    Taiphantram_65=temp[12];
+                    Taiphantram_70=temp[13];
+                    Taiphantram_75=temp[14];
+                    Taiphantram_80=temp[15];
+                    Taiphantram_85=temp[16];
+                    Taiphantram_90=temp[17];
+
                     preferences.putUInt("Taiphantram_05",Taiphantram_05);
                     preferences.putUInt("Taiphantram_10",Taiphantram_10);
                     preferences.putUInt("Taiphantram_15",Taiphantram_15);
@@ -1265,6 +1286,6 @@ void Task_HMI_code( void * pvParameters )
     // Serial.print("Task HMI running on: ");
     // Serial.println(xPortGetCoreID());
     digitalWrite(Led1, !digitalRead(Led1));
-    vTaskDelay(300);
+    vTaskDelay(200);
   } 
 }

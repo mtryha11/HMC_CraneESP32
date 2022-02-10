@@ -23,7 +23,7 @@ void Task_LoadTB_code( void * pvParameters )
   }
 
   //preferences.putBool("ADS_Type",0);
-  
+  vTaskDelay(100);
   ADS_Type=  preferences.getBool("ADS_Type",0);
 
   Multi_Loadtable_State=  preferences.getBool("LTB_state",0);

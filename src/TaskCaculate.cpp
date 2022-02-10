@@ -510,6 +510,7 @@ void Task_Caculate_code( void * pvParameters )
         Calculate_Angle();
         Calculate_H_R();
         Calib0_Banhlop();
+        // W_value=Wheel_CalculateT()*1.1;
         W_value=Wheel_CalculateT();
         Calibtaitungdoan5do();
         Tinhtoantaimax_bangtai_phantramtai();
@@ -590,7 +591,7 @@ void Task_Caculate_code( void * pvParameters )
     }
     // Serial.print("Task calculate running on: ");
     // Serial.println(xPortGetCoreID());
-    vTaskDelay(400);
+    vTaskDelay(250);
   }
 }
 
@@ -653,7 +654,7 @@ float CalculateMaxWe()
 
     if(Lengthd < (LT[1]))
     {
-      if(Lengthd > (LT[1]-20))
+      if(Lengthd > (LT[1]-50))
       {
         x1=1;
         x2=1;
@@ -666,7 +667,7 @@ float CalculateMaxWe()
     }
     else if(Lengthd > (LT[Socot-1]))
     {
-      if(Lengthd < (LT[Socot-1]+20))
+      if(Lengthd < (LT[Socot-1]+50))
       {
         x1=Socot-1;
 		    x2=Socot-1;
@@ -700,7 +701,7 @@ float CalculateMaxWe()
 
     if(Radiusd < (LT[1*Socot]) )
     {
-      if(Radiusd > (LT[1*Socot]-20))
+      if(Radiusd > (LT[1*Socot]-50))
       {
         y1=1;
         y2=1;
@@ -710,7 +711,7 @@ float CalculateMaxWe()
     }
     else if(Radiusd > ((LT[(Sohang-1)*Socot])))
     {
-      if(Radiusd < ((LT[(Sohang-1)*Socot])+20))
+      if(Radiusd < ((LT[(Sohang-1)*Socot])+50))
       {
         y1=Sohang-1;
         y2=Sohang-1;
