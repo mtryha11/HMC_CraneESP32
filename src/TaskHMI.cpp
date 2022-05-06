@@ -77,7 +77,7 @@ void postTransmission()
 }
 ///////////////////// RS485 ///////////////////
 
-
+uint16_t page_old;
 void Task_HMI_code( void * pvParameters )
 {
     //// Khoi tao cho RS485 ////
@@ -93,7 +93,15 @@ void Task_HMI_code( void * pvParameters )
   {
     if (node.readHoldingRegisters(Screen_no_status_addr, 1) == node.ku8MBSuccess)
     {
-        Page_status=node.getResponseBuffer(0);
+        page_old=node.getResponseBuffer(0);
+        if(page_old != Page_status)
+        {
+            Page_status=page_old;
+            // Trigger_Page=1;
+            node.writeSingleCoil(Trigger_Page_addr,1);
+            Serial.println("Chuyen trang");
+        }
+        
         node.clearResponseBuffer();
         result_comunication_HMI=1;
     }
@@ -143,6 +151,8 @@ void Task_HMI_code( void * pvParameters )
                 case(3):
                 case(5):
                 {
+                    Trigger_Main_Aux=1;
+                    node.writeSingleCoil(20,1); // Clear Trigger_Main_Aux
                     result = node.writeSingleRegister(Screen_no_control_addr,0x02);
                     // Serial.println("Chuyen trang banh lop");
                 }
@@ -150,7 +160,9 @@ void Task_HMI_code( void * pvParameters )
 
                 case(2):    // Chuyen trang Home banh Xich
                 case(4):
-                {
+                {   
+                    Trigger_Main_Aux=1;
+                    node.writeSingleCoil(20,1); // Clear Trigger_Main_Aux
                     result = node.writeSingleRegister(Screen_no_control_addr,0x03);
                     // Serial.println("Chuyen trang banh xich");
                 }
@@ -180,10 +192,12 @@ void Task_HMI_code( void * pvParameters )
 
             if(Trigger_Main_Aux==1)
             {
-                node.readCoils(35, 1);
-                Main_Aux=node.getResponseBuffer(0);
-                node.clearResponseBuffer();
-                preferences.putBool("Main_Aux",Main_Aux);
+                if(node.readCoils(35, 1) == node.ku8MBSuccess)
+                {
+                    Main_Aux=node.getResponseBuffer(0);
+                    node.clearResponseBuffer();
+                    preferences.putBool("Main_Aux",Main_Aux);
+                }
                 node.writeSingleCoil(20,0); // Clear Trigger_Main_Aux
                 // Serial.print("Vua chon cap: "); Serial.println(Main_Aux);        /// 1 La cap phu, 0 la cap chinh
             }
@@ -208,7 +222,8 @@ void Task_HMI_code( void * pvParameters )
             }
 
             if(Trigger_Loadtable==1)
-            {   uint16_t temp[2];
+            {
+                uint16_t temp[2];
                 node.readHoldingRegisters(Load_table_value_addr, 2);
                 temp[0]=node.getResponseBuffer(0);
                 temp[1]=node.getResponseBuffer(1);
@@ -450,10 +465,8 @@ void Task_HMI_code( void * pvParameters )
                     node.clearResponseBuffer();
                     Angle_value_calib1=bytesToFloat(&temp[0]);
                     Angle_raw_calib1=Angle_raw;
-
                     preferences.putFloat("A2",Angle_value_calib1);
                     preferences.putShort("A4",Angle_raw_calib1);
-
                     node.writeSingleCoil(Trigger_Page_addr,1);      // Clear Trigger Page
                  }
                     node.writeSingleCoil(53,0);      // Clear Trigger_Setting_Angle
@@ -1175,6 +1188,7 @@ void Task_HMI_code( void * pvParameters )
         {   
             if(Trigger_Page==1)
             {
+                Serial.println("Cap nhat lan dau");
                 Word_to_Register(Taiphantram_05,1);
                 Word_to_Register(Taiphantram_10,2);
                 Word_to_Register(Taiphantram_15,3);
@@ -1270,6 +1284,7 @@ void Task_HMI_code( void * pvParameters )
                     preferences.putUInt("Taiphantram_80",Taiphantram_80);
                     preferences.putUInt("Taiphantram_85",Taiphantram_85);
                     preferences.putUInt("Taiphantram_90",Taiphantram_90);
+                    Serial.println("Cap nhat %");
                     node.writeSingleCoil(Trigger_Page_addr,1);      // Clear Trigger Page
                  }
                     node.writeSingleCoil(65,0);      // Clear Trigger_Setting_Other
