@@ -39,7 +39,7 @@ void Task_Sensor_code( void * pvParameters )
   scale1.begin(LOADCELL1_DOUT_PIN, LOADCELL1_SCK_PIN);
   scale2.begin(LOADCELL2_DOUT_PIN, LOADCELL2_SCK_PIN);
 
-  if(ADS_Type==1)
+  if(ADS_Type==1)//Dung
   {
     Wire.setPins(21,22);
   }

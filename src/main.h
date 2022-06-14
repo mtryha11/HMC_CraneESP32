@@ -10,6 +10,8 @@
 #include "TaskAlarm.h"
 #include "TaskSensor.h"
 #include "TaskLoadTB.h"
+#include "TaskWifiOTA.h"
+#include "TaskCAN.h"
 
 uint8_t result_comunication_HMI;
 uint8_t device_type=1;

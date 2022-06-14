@@ -15,14 +15,14 @@ bool ADS_Type;
 void Task_LoadTB_code( void * pvParameters )
 {
   preferences.begin("HMC", false);
-
+  //preferences.begin("HMC1", false);
   device_type=            preferences.getUChar("DT",1);
   if(device_type>5)
   {
     device_type=1;
   }
 
-  //preferences.putBool("ADS_Type",0);
+  preferences.putBool("ADS_Type",1);
   vTaskDelay(100);
   ADS_Type=  preferences.getBool("ADS_Type",0);
 
