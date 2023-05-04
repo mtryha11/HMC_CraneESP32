@@ -39,14 +39,14 @@ void Task_Sensor_code( void * pvParameters )
   scale1.begin(LOADCELL1_DOUT_PIN, LOADCELL1_SCK_PIN);
   scale2.begin(LOADCELL2_DOUT_PIN, LOADCELL2_SCK_PIN);
 
-  if(ADS_Type==1)//Dung
-  {
+  // if(ADS_Type==1)//Dung
+  // {
     Wire.setPins(21,22);
-  }
-  else
-  {
-    Wire.setPins(22,21);
-  }
+  // }
+  // else
+  // {
+  //   Wire.setPins(22,21);
+  // }
   
   Wire.setClock(100000);
 
@@ -61,16 +61,16 @@ void Task_Sensor_code( void * pvParameters )
     is_ads1_init_ok=0;
   }
 
-  if (ads2.begin(0x49)) 
-  {
-    ads2.setGain(GAIN_ONE);
-    ads2.setDataRate(RATE_ADS1115_8SPS);
-    is_ads2_init_ok=1;
-  }
-  else
-  {
-    is_ads2_init_ok=0;
-  }
+  // if (ads2.begin(0x49)) 
+  // {
+  //   ads2.setGain(GAIN_ONE);
+  //   ads2.setDataRate(RATE_ADS1115_8SPS);
+  //   is_ads2_init_ok=1;
+  // }
+  // else
+  // {
+  //   is_ads2_init_ok=0;
+  // }
 
   for(;;)
   {
@@ -79,25 +79,40 @@ void Task_Sensor_code( void * pvParameters )
     //Loadcell1_raw=Loadcell2_raw;
     ReadInput();
     ReadADS1();
-    ReadADS2();
+    // ReadADS2();
 
-    if(millis()-timesensor>5000)
+    if(millis()-timesensor>1000)
     {
+      // Loadcell1_value_calib0=15.0;
+      // Loadcell1_raw_calib0=9105576;
+      // Loadcell1_value_calib1=22.5;
+      // Loadcell1_raw_calib1=11558866;
 
-      Serial.print("\t| Loadcell 1:\t");
+      // Loadcell2_value_calib0=10.8;
+      // Loadcell2_raw_calib0=8679065;
+      // Loadcell2_value_calib1=24.95;
+      // Loadcell2_raw_calib1=12094591;
+
+      Serial.print("\t| Loadcell 1 Raw:\t");
       Serial.println(Loadcell1_raw);
-      Serial.print("\t| Loadcell 2:\t");
+      Serial.print("\t| Loadcell 1 Value:\t");
+      Serial.println(Loadcell1_value);
+
+      Serial.print("\t| Loadcell 2 Raw:\t");
       Serial.println(Loadcell2_raw);
+      Serial.print("\t| Loadcell 2 Value:\t");
+      Serial.println(Loadcell2_value);
+
       Serial.println("--------------------------------------------");
-      Serial.print("ADS_Type: ");  Serial.println(ADS_Type);
+      // Serial.print("ADS_Type: ");  Serial.println(ADS_Type);
       Serial.print("Length_raw: ");  Serial.print(Length_raw);  Serial.println("adc");
       Serial.print("Angle_raw: ");   Serial.print(Angle_raw);   Serial.println("adc");
       Serial.print("P1_raw: ");      Serial.print(P1_raw);      Serial.println("mV");
       Serial.print("P2_raw: ");      Serial.print(P2_raw);      Serial.println("mV");
-      Serial.print("P3_raw: ");      Serial.print(P3_raw);      Serial.println("mV");
-      Serial.print("P4_raw: ");      Serial.print(P4_raw);      Serial.println("mV");
-      Serial.print("P5_raw: ");      Serial.print(P5_raw);      Serial.println("mV");
-      Serial.print("uc_Voltage: ");  Serial.print(uc_Voltage);  Serial.println("V");
+      // Serial.print("P3_raw: ");      Serial.print(P3_raw);      Serial.println("mV");
+      // Serial.print("P4_raw: ");      Serial.print(P4_raw);      Serial.println("mV");
+      // Serial.print("P5_raw: ");      Serial.print(P5_raw);      Serial.println("mV");
+      // Serial.print("uc_Voltage: ");  Serial.print(uc_Voltage);  Serial.println("V");
       timesensor=millis();
     }
     

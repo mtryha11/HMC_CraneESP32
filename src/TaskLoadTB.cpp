@@ -160,7 +160,7 @@ void Task_LoadTB_code( void * pvParameters )
   }
   for(;;)
   {
-    Napbangtai.task();
+    // Napbangtai.task();
 
     if(Napbangtai.Hreg(0)!=0)
     {
