@@ -1,0 +1,5 @@
+modbus-esp8266
+ModbusMaster
+adafruit/Adafruit BusIO@^1.7.5
+bogde/HX711@^0.7.4
+adafruit/Adafruit ADS1X15@^2.2.0
