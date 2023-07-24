@@ -63,6 +63,10 @@ extern float P0_Length;                     // P0_Length
 extern float P0_Angle;                      // P0_Angle
 extern float P0_L0_value;
 
+extern uint16_t CW0_56_108_160_180;
+extern bool L_LD;
+extern bool Ballas30_90;
+
 extern float Loadcell1_value_calib0;       // Load1
 extern float Loadcell1_value_calib1;       // Load2
 extern float Loadcell2_value_calib0;       // Load3
@@ -83,7 +87,8 @@ extern volatile uint16_t Socot;
 extern volatile uint16_t Stt;
 extern float Load_table_value;   
 extern uint16_t Doitrong[10];
-extern uint16_t LT[800];
+
+
 extern volatile uint8_t is_LT_ok;
 extern bool Trigger_LT;
 

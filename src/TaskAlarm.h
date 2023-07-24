@@ -22,6 +22,7 @@ extern float Length_alarm_min;         // L5
 extern float Length_alarm_set;         // L6
 extern float Length_alarm_max;         // L7
 extern bool DigitalInput_1;
-
+extern bool DigitalInput_2;
+extern bool DigitalInput_3;
 
 #endif

@@ -1,5 +1,8 @@
-modbus-esp8266
-ModbusMaster
 adafruit/Adafruit BusIO@^1.7.5
-bogde/HX711@^0.7.4
+ESP-WiFiSettings
+modbus-esp8266
 adafruit/Adafruit ADS1X15@^2.2.0
+ArduinoNvs
+bogde/HX711@^0.7.4
+ESP32Ping
+ModbusMaster

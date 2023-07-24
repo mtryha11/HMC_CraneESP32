@@ -21,10 +21,12 @@ void Calculate_Angle()
 void Calculate_Length()
 {
   Length_value=mapFloat(Length_raw, Length_raw_calib0, Length_raw_calib1, Length_value_calib0, Length_value_calib1);
+  // Length_value=mapFloat(Length_raw, 0, 32768, 0, Length_value_calib1);  // Xe 550 //
 }
 
 void Calculate_Loadcell()
 {
+  P1_value=mapFloat(P1_raw, (4*Resistor_4_20ma), (20*Resistor_4_20ma), 0, 30);
   Loadcell1_value=mapFloat(Loadcell1_raw, Loadcell1_raw_calib0, Loadcell1_raw_calib1, Loadcell1_value_calib0, Loadcell1_value_calib1);
   Loadcell2_value=mapFloat(Loadcell2_raw, Loadcell2_raw_calib0, Loadcell2_raw_calib1, Loadcell2_value_calib0, Loadcell2_value_calib1);
   Loadcelltotal_value=Loadcell1_value+Loadcell2_value;
@@ -32,7 +34,8 @@ void Calculate_Loadcell()
 
 void Calculate_Press()
 {
-  P1_value=mapFloat(P1_raw, (4*Resistor_4_20ma), (20*Resistor_4_20ma), 0, P1_range);
+  // P1_value=mapFloat(P1_raw, (4*Resistor_4_20ma), (20*Resistor_4_20ma), 0, P1_range);
+  P1_value=mapFloat(P1_raw, (4*Resistor_4_20ma), (20*Resistor_4_20ma), 0, 30);  // Xe 550 //
   P2_value=mapFloat(P2_raw, (4*Resistor_4_20ma), (20*Resistor_4_20ma), 0, P2_range);
   P3_value=mapFloat(P3_raw, (4*Resistor_4_20ma), (20*Resistor_4_20ma), 0, P3_range);
   P4_value=mapFloat(P4_raw, (4*Resistor_4_20ma), (20*Resistor_4_20ma), 0, P4_range);
@@ -559,6 +562,7 @@ void Task_Caculate_code( void * pvParameters )
         Calculate_Angle();
         Calculate_H_R();
         Calculate_Loadcell();
+        // Calculate_Press();
         W_value=Tinhtaibangloadcell_tructiep();
         Tinhtoantaimax_bangtai_phantramtai();
         if(MaxW_value==0)
@@ -619,9 +623,9 @@ if((Length_value <(LT[Socot-1]*0.01f)) && ((R_value <(LT[Socot*(Sohang-1)]*0.01f
 				if(W_value>0) 
 				{
 					Loadpercent=(uint16_t)(W_value/MaxW_value*100);
-					if(Loadpercent>100) 
+					if(Loadpercent>130) 
 					{
-						Loadpercent=100;
+						Loadpercent=130;
 					}
 				} 
 				else 

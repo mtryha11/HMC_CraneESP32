@@ -10,6 +10,7 @@ void postTransmission(void);
 
 void Float_to_Register(float variable,uint8_t register0, uint8_t register1);
 void Word_to_Register(uint16_t variable,uint8_t register2);
+void Capnhatbangtai();
 
 #define Trigger_Page_addr           22
 #define Multi_Loadtable_State_addr  27
@@ -41,9 +42,8 @@ void Word_to_Register(uint16_t variable,uint8_t register2);
 #define Length_banhxich_addr        40053
 #define Parar_addr                  40201
 
-      
 
-
+extern uint16_t LT[600];
 
 extern const uint8_t Led1;
 
@@ -61,6 +61,12 @@ extern bool flag_setLoad0_Crawler;
 extern bool Main_Aux;
 extern uint16_t Cab_main_number;
 extern uint16_t Cab_aux_number;
+
+extern uint16_t CW0_56_108_160_180;
+extern bool L_LD;
+extern bool Ballas30_90;
+
+
 extern float Angle_value; 
 extern float Length_value;
 extern float W_value;

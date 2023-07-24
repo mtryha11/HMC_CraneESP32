@@ -45,7 +45,7 @@ void Task_Sensor_code( void * pvParameters )
   // }
   // else
   // {
-    Wire.setPins(22,21);
+    Wire.setPins(21,22);
   // }
   
   Wire.setClock(100000);
@@ -81,7 +81,7 @@ void Task_Sensor_code( void * pvParameters )
     ReadADS1();
     // ReadADS2();
 
-    if(millis()-timesensor>1000)
+    if(millis()-timesensor>30000)
     {
       // Loadcell1_value_calib0=15.0;
       // Loadcell1_raw_calib0=9105576;
@@ -180,9 +180,9 @@ void ReadADS2()
 
 void ReadInput()
 {
-  DigitalInput_1=!digitalRead(pin_DIN1);
-  DigitalInput_2=!digitalRead(pin_DIN2);
-  DigitalInput_3=!digitalRead(pin_DIN3);
+  DigitalInput_1=digitalRead(pin_DIN1);
+  DigitalInput_2=digitalRead(pin_DIN2);
+  DigitalInput_3=digitalRead(pin_DIN3);
 }
 
 void ReadLoadcell1()

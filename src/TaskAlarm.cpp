@@ -3,13 +3,13 @@
 bool Mode_Test_Relay=0;
 
 bool Stt_CabMax=0;
-bool Stt_AngleHi=0;
+bool Stt_AngleHi=1;
 bool Stt_AngleSet=0;
 bool Stt_LengthHi=0;
 bool Stt_LengthLow=0;
 bool Stt_LoadHi=0;
 bool Stt_LoadSet=0;
-
+extern bool Bypass;
 uint8_t Pin_CabMax=32;
 uint8_t Pin_AngleHi=33;
 uint8_t Pin_AngleSet=25;
@@ -71,44 +71,44 @@ digitalWrite(Pin_LoadSet,LOW);
     if(Page_status!=12)
     {
       ///// Process Angle Alarm ///////
-      if(Angle_value<Angle_alarm_set)
-      {
-        Stt_AngleSet=1;
-        Stt_AngleHi=0;
-      }
-      else if((Angle_value>=Angle_alarm_set) && (Angle_value<Angle_alarm_max))
-      {
-        Stt_AngleSet=0;
-        Stt_AngleHi=0;
-      }
-      else
-      {
-        Stt_AngleSet=0;
-        Stt_AngleHi=1;
-      }
+      // if(Angle_value<Angle_alarm_set)
+      // {
+      //   Stt_AngleSet=1;
+      //   Stt_AngleHi=0;
+      // }
+      // else if((Angle_value>=Angle_alarm_set) && (Angle_value<Angle_alarm_max))
+      // {
+      //   Stt_AngleSet=0;
+      //   Stt_AngleHi=0;
+      // }
+      // else
+      // {
+      //   Stt_AngleSet=0;
+      //   Stt_AngleHi=1;
+      // }
       ///// Process Angle Alarm ///////
 
-      ///// Process Length Alarm Low ///////
-      if(Length_value<Length_alarm_min)
-      {
-        Stt_LengthLow=1;
-      }
-      else
-      {
-        Stt_LengthLow=0;
-      }
-      ///// Process Length Alarm Low ///////
+      // ///// Process Length Alarm Low ///////
+      // if(Length_value<Length_alarm_min)
+      // {
+      //   Stt_LengthLow=1;
+      // }
+      // else
+      // {
+      //   Stt_LengthLow=0;
+      // }
+      // ///// Process Length Alarm Low ///////
 
-      ///// Process Length Alarm Hi ///////
-      if(Length_value>=Length_alarm_max)
-      {
-        Stt_LengthHi=1;
-      }
-      else
-      {
-        Stt_LengthHi=0;
-      }
-      ///// Process Length Alarm Hi ///////
+      // ///// Process Length Alarm Hi ///////
+      // if(Length_value>=Length_alarm_max)
+      // {
+      //   Stt_LengthHi=1;
+      // }
+      // else
+      // {
+      //   Stt_LengthHi=0;
+      // }
+      // ///// Process Length Alarm Hi ///////
 
       ///// Process Load Alarm ///////
       if(Loadpercent<Load_alarm_set)
@@ -122,6 +122,7 @@ digitalWrite(Pin_LoadSet,LOW);
         Stt_LoadHi=0;
         Stt_LoadSet=1;
         Load_stt=1;
+        Bypass=0;
       }
       else if(Loadpercent>=(Load_alarm_max-0.1))
       {
@@ -131,13 +132,31 @@ digitalWrite(Pin_LoadSet,LOW);
       }
       ///// Process Load Alarm ///////
 
-    if(DigitalInput_1==1)
+    if(DigitalInput_1==0)
     {
-      Stt_CabMax=1;
+      Stt_CabMax=0;
     }
     else
     {
-      Stt_CabMax=0;
+      Stt_CabMax=1;
+    }
+
+    if(DigitalInput_2==0)
+    {
+      Stt_LengthLow=0;
+    }
+    else
+    {
+      Stt_LengthLow=1;
+    }
+
+    if(DigitalInput_3==0)
+    {
+      Stt_LengthHi=0;
+    }
+    else
+    {
+      Stt_LengthHi=1;
     }
 
     }

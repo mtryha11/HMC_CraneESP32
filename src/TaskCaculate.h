@@ -112,7 +112,7 @@ extern bool flag_setLoad0_Crawler;
 extern volatile uint16_t Sohang;
 extern volatile uint16_t Socot;
 extern volatile uint16_t Stt;   
-extern uint16_t LT[800];
+extern uint16_t LT[600];
 
 
 void Calculate_H_R();

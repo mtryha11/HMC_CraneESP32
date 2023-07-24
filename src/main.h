@@ -10,7 +10,7 @@
 #include "TaskAlarm.h"
 #include "TaskSensor.h"
 #include "TaskLoadTB.h"
-// #include "TaskWifiOTA.h"
+// #include "Wifi_OTATask.h"
 // #include "TaskCAN.h"
 
 uint8_t result_comunication_HMI;
@@ -20,6 +20,8 @@ const uint8_t Led1 = 2;
 
 
 uint16_t data[6];
+
+
 
 // Bien cai dat
 float Angle_value_calib0;           // A1
@@ -55,6 +57,9 @@ bool Multi_Loadtable_State;         // LTB_state
 bool Main_Aux;                      // Main_Aux
 uint16_t Cab_main_number;           // Cab_main_num
 uint16_t Cab_aux_number;            // Cab_aux_num
+uint16_t CW0_56_108_160_180;        
+bool L_LD;
+bool Ballas30_90;
 
 
 float Parar;                        // Parar  
@@ -164,8 +169,10 @@ uint16_t Taiphantram_85;
 uint16_t Taiphantram_90;
 
 
+uint16_t LT[600];
 
-uint16_t LT[800];
+
+
 volatile uint8_t is_LT_ok=0;
 
 bool flag_setLoad0_Whell=0;

@@ -83,11 +83,19 @@ void Task_LoadTB_code( void * pvParameters )
   ParaK2=                 preferences.getFloat("ParaK2",0);
   ParaK3=                 preferences.getFloat("ParaK3",0);
   ParaK4=                 preferences.getFloat("ParaK4",0);
-  Sohang=                 preferences.getUInt("Sohang",0);
-  Socot=                  preferences.getUInt("Socot",0);
-  Stt=                    preferences.getUInt("Bangso",0);
-  Length_xich_nhap=       preferences.getFloat("L_xich",0);
+  // Sohang=                 preferences.getUInt("Sohang",0);
+  // Socot=                  preferences.getUInt("Socot",0);
+  // Stt=                    preferences.getUInt("Bangso",0);
 
+
+  ////// Xe 550 /////
+  Sohang=32;
+  Socot=10;
+  Stt=1;
+    ////// Xe 550 /////
+
+  
+  Length_xich_nhap=       preferences.getFloat("L_xich",0);
   Taiphantram_05=         preferences.getUInt("Taiphantram_05",100);
   Taiphantram_10=         preferences.getUInt("Taiphantram_10",100);
   Taiphantram_15=         preferences.getUInt("Taiphantram_15",100);
@@ -158,170 +166,176 @@ void Task_LoadTB_code( void * pvParameters )
     Napbangtai.addHreg(100+i);
     Napbangtai.Hreg(100+i, 0);
   }
+
+
+  CW0_56_108_160_180 = preferences.getShort("CW",0);
+  L_LD = preferences.getBool("L_LD",0);
+  Ballas30_90 = preferences.getBool("Ballas",0);
+
   for(;;)
   {
     // Napbangtai.task();
 
-    if(Napbangtai.Hreg(0)!=0)
-    {
-      Stt=      Napbangtai.Hreg(0);
-      Sohang=   Napbangtai.Hreg(1);
-      Socot=    Napbangtai.Hreg(2);
-      preferences.putUInt("Sohang",Sohang);
-      preferences.putUInt("Socot",Socot);
-      preferences.putUInt("Bangso",Stt);
+    // if(Napbangtai.Hreg(0)!=0)
+    // {
+    //   Stt=      Napbangtai.Hreg(0);
+    //   Sohang=   Napbangtai.Hreg(1);
+    //   Socot=    Napbangtai.Hreg(2);
+    //   preferences.putUInt("Sohang",Sohang);
+    //   preferences.putUInt("Socot",Socot);
+    //   preferences.putUInt("Bangso",Stt);
       
-       for(uint16_t a=0;a<Sohang;a++)
-      {
-        for(uint16_t b=0;b<Socot;b++)
-        {
-          LT[(a*Socot+b)]=Napbangtai.Hreg(100+ (a*Socot+b));
-        }
-      }
-      switch(Stt)
-      {
-        case (1): 
-        {
-          Doitrong[0]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_1",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (2): 
-        {
-          Doitrong[1]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_2",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (3): 
-        {
-          Doitrong[2]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_3",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (4): 
-        {
-          Doitrong[3]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_4",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (5): 
-        {
-          Doitrong[4]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_5",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (6): 
-        {
-          Doitrong[5]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_6",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (7): 
-        {
-          Doitrong[6]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_7",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (8): 
-        {
-          Doitrong[7]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_8",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (9): 
-        {
-          Doitrong[8]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_9",LT,(2*Sohang*Socot));
-        }
-        break;
-        case (10): 
-        {
-          Doitrong[9]= Napbangtai.Hreg(3);
-          preferences.putBytes("Bangtai_10",LT,(2*Sohang*Socot));
-        }
-        break;
-      }
-      preferences.putBytes("Doitrong",Doitrong,20);
-      Napbangtai.Hreg(0, 0);
-    }
+    //    for(uint16_t a=0;a<Sohang;a++)
+    //   {
+    //     for(uint16_t b=0;b<Socot;b++)
+    //     {
+    //       LT[(a*Socot+b)]=Napbangtai.Hreg(100+ (a*Socot+b));
+    //     }
+    //   }
+    //   switch(Stt)
+    //   {
+    //     case (1): 
+    //     {
+    //       Doitrong[0]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_1",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (2): 
+    //     {
+    //       Doitrong[1]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_2",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (3): 
+    //     {
+    //       Doitrong[2]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_3",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (4): 
+    //     {
+    //       Doitrong[3]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_4",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (5): 
+    //     {
+    //       Doitrong[4]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_5",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (6): 
+    //     {
+    //       Doitrong[5]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_6",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (7): 
+    //     {
+    //       Doitrong[6]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_7",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (8): 
+    //     {
+    //       Doitrong[7]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_8",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (9): 
+    //     {
+    //       Doitrong[8]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_9",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //     case (10): 
+    //     {
+    //       Doitrong[9]= Napbangtai.Hreg(3);
+    //       preferences.putBytes("Bangtai_10",LT,(2*Sohang*Socot));
+    //     }
+    //     break;
+    //   }
+    //   preferences.putBytes("Doitrong",Doitrong,20);
+    //   Napbangtai.Hreg(0, 0);
+    // }
 
-    if(Trigger_LT==1)
-    {
-      uint16_t temp;
-      temp=Load_table_value*100;
-      if(temp==Doitrong[0]) // 
-      {
-        preferences.getBytes("Bangtai_1",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 1 - Mac dinh");
-        Stt=1;
-      }
-      else if(temp==Doitrong[1])
-      {
-        preferences.getBytes("Bangtai_2",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 2");
-        Stt=2;
-      }
-      else if(temp==Doitrong[2])
-      {
-        preferences.getBytes("Bangtai_3",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 3");
-        Stt=3;
-      }
-      else if(temp==Doitrong[3])
-      {
-        preferences.getBytes("Bangtai_4",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 4");
-        Stt=4;
-      }
-      else if(temp==Doitrong[4])
-      {
-        preferences.getBytes("Bangtai_5",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 5");
-        Stt=5;
-      }
-      else if(temp==Doitrong[5])
-      {
-        preferences.getBytes("Bangtai_6",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 6");
-        Stt=6;
-      }
-      else if(temp==Doitrong[6])
-      {
-        preferences.getBytes("Bangtai_7",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 7");
-        Stt=7;
-      }
-      else if(temp==Doitrong[7])
-      {
-        preferences.getBytes("Bangtai_8",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 8");
-        Stt=8;
-      }
-      else if(temp==Doitrong[8])
-      {
-        preferences.getBytes("Bangtai_9",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 9");
-        Stt=9;
-      }
-      else if(temp==Doitrong[9])
-      {
-        preferences.getBytes("Bangtai_10",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 10");
-        Stt=10;
-      }
+    // if(Trigger_LT==1)
+    // {
+    //   uint16_t temp;
+    //   temp=Load_table_value*100;
+    //   if(temp==Doitrong[0]) // 
+    //   {
+    //     preferences.getBytes("Bangtai_1",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 1 - Mac dinh");
+    //     Stt=1;
+    //   }
+    //   else if(temp==Doitrong[1])
+    //   {
+    //     preferences.getBytes("Bangtai_2",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 2");
+    //     Stt=2;
+    //   }
+    //   else if(temp==Doitrong[2])
+    //   {
+    //     preferences.getBytes("Bangtai_3",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 3");
+    //     Stt=3;
+    //   }
+    //   else if(temp==Doitrong[3])
+    //   {
+    //     preferences.getBytes("Bangtai_4",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 4");
+    //     Stt=4;
+    //   }
+    //   else if(temp==Doitrong[4])
+    //   {
+    //     preferences.getBytes("Bangtai_5",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 5");
+    //     Stt=5;
+    //   }
+    //   else if(temp==Doitrong[5])
+    //   {
+    //     preferences.getBytes("Bangtai_6",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 6");
+    //     Stt=6;
+    //   }
+    //   else if(temp==Doitrong[6])
+    //   {
+    //     preferences.getBytes("Bangtai_7",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 7");
+    //     Stt=7;
+    //   }
+    //   else if(temp==Doitrong[7])
+    //   {
+    //     preferences.getBytes("Bangtai_8",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 8");
+    //     Stt=8;
+    //   }
+    //   else if(temp==Doitrong[8])
+    //   {
+    //     preferences.getBytes("Bangtai_9",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 9");
+    //     Stt=9;
+    //   }
+    //   else if(temp==Doitrong[9])
+    //   {
+    //     preferences.getBytes("Bangtai_10",LT,(2*Sohang*Socot));
+    //     Serial.println("Load Bang 10");
+    //     Stt=10;
+    //   }
 
       
-      for(uint8_t i=0;i<Sohang;i++) // Show bang tai
-      {
-        for(uint8_t j=0;j<Socot;j++)
-        {
-          Serial.print(LT[(i*Socot)+j]); Serial.print("\t");
-        }
-        Serial.println();
-      }
-      Serial.println("-------------------------------------------------");
-      Trigger_LT=0;
-    }
+    //   for(uint8_t i=0;i<Sohang;i++) // Show bang tai
+    //   {
+    //     for(uint8_t j=0;j<Socot;j++)
+    //     {
+    //       Serial.print(LT[(i*Socot)+j]); Serial.print("\t");
+    //     }
+    //     Serial.println();
+    //   }
+    //   Serial.println("-------------------------------------------------");
+    //   Trigger_LT=0;
+    // }
     vTaskDelay(100);
   }
 }
