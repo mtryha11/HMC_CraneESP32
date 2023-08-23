@@ -6,7 +6,7 @@
 #include <ESP32Ping.h>
 #include <ArduinoNvs.h>
 
-String      VERSION_INC =   "6.0.12";
+String      VERSION_INC =   "6.1.1";
 String      MAC;
 
 uint32_t updateCounter = 0;

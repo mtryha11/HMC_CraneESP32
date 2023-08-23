@@ -467,8 +467,8 @@ bool WiFiSettingsClass::connect(bool portal, int wait_seconds) {
     String pw = slurp("/wifi-pass");
 
     if (ssid.length() == 0) {
-        ssid="4G-CPE-4F9F";
-        pw="12345678";
+        ssid="Cty Hoang Minh";
+        pw="hoangminhim";
     }
 
     // if (ssid.length() == 0) {
