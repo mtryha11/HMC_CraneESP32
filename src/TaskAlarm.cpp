@@ -9,7 +9,7 @@ bool Stt_LengthHi=0;
 bool Stt_LengthLow=0;
 bool Stt_LoadHi=0;
 bool Stt_LoadSet=0;
-
+extern bool Ban_thucan;
 uint8_t Pin_CabMax=32;
 uint8_t Pin_AngleHi=33;
 uint8_t Pin_AngleSet=25;
@@ -89,7 +89,7 @@ digitalWrite(Pin_LoadSet,LOW);
       ///// Process Angle Alarm ///////
 
       ///// Process Length Alarm Low ///////
-      if(Length_value<Length_alarm_min)
+      if(Ban_thucan==1)
       {
         Stt_LengthLow=1;
       }
@@ -97,6 +97,14 @@ digitalWrite(Pin_LoadSet,LOW);
       {
         Stt_LengthLow=0;
       }
+      // if(Length_value<Length_alarm_min)
+      // {
+      //   Stt_LengthLow=1;
+      // }
+      // else
+      // {
+      //   Stt_LengthLow=0;
+      // }
       ///// Process Length Alarm Low ///////
 
       ///// Process Length Alarm Hi ///////

@@ -36,6 +36,8 @@ bool Trigger_Setting_Loadcell2_calib1=0;
 bool Trigger_Setting_Loadcell=0;
 bool Trigger_Customer=0;
 
+bool S30,S31,S32,S33,S34,S35,S36,S37,S38,S39=0;
+bool Ban_thucan,Off,Dong_mochot=0;
 float bytesToFloat(uint16_t *bytes) 
 {
     float f;
@@ -83,7 +85,7 @@ void Task_HMI_code( void * pvParameters )
     //// Khoi tao cho RS485 ////
   pinMode(DE_pin, OUTPUT);
   digitalWrite(DE_pin, LOW); // Trang thai nhan
-  SerialRS485.begin(115200);
+  SerialRS485.begin(9600);
   node.begin(2, SerialRS485);
   node.preTransmission(preTransmission);
   node.postTransmission(postTransmission);
@@ -91,6 +93,44 @@ void Task_HMI_code( void * pvParameters )
 
   for(;;)
   {
+    node.begin(1, SerialRS485);
+    node.preTransmission(preTransmission);
+    node.postTransmission(postTransmission);
+    
+    if(node.readDiscreteInputs(1,16) == node.ku8MBSuccess)
+    {
+        uint16_t temp = node.getResponseBuffer(0);
+        // Serial.println(temp);
+        S30=temp & BIT0;
+        S31=temp & BIT1;
+        S32=temp & BIT3;
+        S33=temp & BIT5;
+        S34=temp & BIT8;
+        S35=temp & BIT9;
+        S36=temp & BIT10;
+        S37=temp & BIT11;
+        S38=temp & BIT13;
+        S39=temp & BIT14;
+        node.clearResponseBuffer();
+    }
+    if(Off==1)
+    {
+        node.setTransmitBuffer(0, 0);
+        result = node.writeMultipleCoils(1, 1);
+    }
+    if((Ban_thucan==1) || (Dong_mochot==1))
+    {
+        node.setTransmitBuffer(0, 1);
+        result = node.writeMultipleCoils(1, 1);
+    }
+
+
+    vTaskDelay(50);
+
+    node.begin(2, SerialRS485);
+    node.preTransmission(preTransmission);
+    node.postTransmission(postTransmission);
+
     if (node.readHoldingRegisters(Screen_no_status_addr, 1) == node.ku8MBSuccess)
     {
         page_old=node.getResponseBuffer(0);
@@ -1289,6 +1329,29 @@ void Task_HMI_code( void * pvParameters )
                  }
                     node.writeSingleCoil(65,0);      // Clear Trigger_Setting_Other
             }
+        }
+        break;
+
+        case 19: // Dang o trang Ban Can
+        {
+            if(node.readCoils(110,3) == node.ku8MBSuccess)  // Read Trigger_Cab_Input
+            {
+                Ban_thucan=node.getResponseBuffer(0) & bit(0);
+                Off=node.getResponseBuffer(0) & bit(1);
+                Dong_mochot=node.getResponseBuffer(0) & bit(2);
+                node.clearResponseBuffer();
+            }
+            Serial.println("------------");
+            Serial.println(Ban_thucan);
+            Serial.println(Off);
+            Serial.println(Dong_mochot);
+            Serial.println("------------");
+            uint16_t temp;
+            temp=((S30)<<9) | ((S31)<<8) | ((S32)<<7) | ((S33)<<6) | ((S34)<<5) | ((S35)<<4) | ((S36)<<3) | ((S37)<<2) | ((S38)<<1) | (S39) ;
+            node.setTransmitBuffer(0, temp);
+            // Serial.println(temp);
+            result = node.writeMultipleCoils(100, 10);
+            node.clearTransmitBuffer();
         }
         break;
 
