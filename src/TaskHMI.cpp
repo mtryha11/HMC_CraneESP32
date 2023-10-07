@@ -125,7 +125,7 @@ void Task_HMI_code( void * pvParameters )
     }
 
 
-    vTaskDelay(50);
+    vTaskDelay(150);
 
     node.begin(2, SerialRS485);
     node.preTransmission(preTransmission);
