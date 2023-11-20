@@ -341,19 +341,19 @@ float Calculatem()
 float Crawler_CalculateP()
 {
   float tmp1,tmp2,tmp3,m;
-  m=Calculatem();
-  tmp2=pow(m,2);                                      //mo^2
-  tmp2=tmp2+pow(L0_value,2);                          //mo^2+Lo^2
+  //m=Calculatem();
+  tmp2=pow(Parac,2);                                      //mo^2
+  tmp2=tmp2+pow(Parab,2);                          //mo^2+Lo^2
   tmp2=tmp2-pow(Paraa,2);                             //mo^2+Lo^2-a^2  (1)
-  tmp3=2*m*L0_value;                                  //2*m0*L       (2)
+  tmp3=2*Parac*Parab;                                  //2*m0*L       (2)
   tmp2=tmp2/tmp3;                                     //(1)/(2)      (12)
   tmp2=acos(tmp2);                                    //acos(12)     (3)
   tmp2=sin(tmp2);                                     // sin (3)
-  tmp3=2*Paran*L0_value*Loadcelltotal_value;
+  tmp3=2*Paran*Parab*Loadcelltotal_value;
   tmp2=tmp2*tmp3;
   tmp1=Angle_value*PI/180;
   tmp1=cos(tmp1);
-  tmp3=P0_value*Length_value*Length_value*ParaK2*tmp1;
+  tmp3=ParaK4*Length_value*ParaK2*tmp1;
   tmp2=tmp2-tmp3;                                     // Tu so
   tmp3=2*Length_value*ParaK2*tmp1;                    // Mau so
   tmp2=tmp2/tmp3 + ParaK3;                            // Bieu thuc
