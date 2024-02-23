@@ -22,6 +22,7 @@ extern uint32_t Loadcell2_raw_calib1;      // Load8
 extern bool DigitalInput_1;
 extern bool DigitalInput_2;
 extern bool DigitalInput_3;
+extern bool DigitalInput_4;
 
 extern uint16_t Angle_raw;
 extern uint16_t Length_raw;

@@ -1228,25 +1228,6 @@ void Task_HMI_code( void * pvParameters )
                     }
                     node.clearResponseBuffer();
                     node.getResponseBuffer(0);
-                    // Taiphantram_05=bytesToFloat(&temp[0]);
-                    // Taiphantram_10=bytesToFloat(&temp[1]);
-                    // Taiphantram_15=bytesToFloat(&temp[2]);
-                    // Taiphantram_20=bytesToFloat(&temp[3]);
-                    // Taiphantram_25=bytesToFloat(&temp[4]);
-                    // Taiphantram_30=bytesToFloat(&temp[5]);
-                    // Taiphantram_35=bytesToFloat(&temp[6]);
-                    // Taiphantram_40=bytesToFloat(&temp[7]);
-                    // Taiphantram_45=bytesToFloat(&temp[8]);
-                    // Taiphantram_50=bytesToFloat(&temp[9]);
-                    // Taiphantram_55=bytesToFloat(&temp[10]);
-                    // Taiphantram_60=bytesToFloat(&temp[11]);
-                    // Taiphantram_65=bytesToFloat(&temp[12]);
-                    // Taiphantram_70=bytesToFloat(&temp[13]);
-                    // Taiphantram_75=bytesToFloat(&temp[14]);
-                    // Taiphantram_80=bytesToFloat(&temp[15]);
-                    // Taiphantram_85=bytesToFloat(&temp[16]);
-                    // Taiphantram_90=bytesToFloat(&temp[17]);
-
                     Taiphantram_05=temp[0];
                     Taiphantram_10=temp[1];
                     Taiphantram_15=temp[2];
@@ -1291,6 +1272,98 @@ void Task_HMI_code( void * pvParameters )
             }
         }
         break;
+
+
+        case 18: // Dang o trang Cài đặt % Dài Cần
+        {   
+            if(Trigger_Page==1)
+            {
+                Serial.println("Cap nhat lan dau");
+                Word_to_Register(Ptramboom_05,1);
+                Word_to_Register(Ptramboom_10,2);
+                Word_to_Register(Ptramboom_15,3);
+                Word_to_Register(Ptramboom_20,4);
+                Word_to_Register(Ptramboom_25,5);
+                Word_to_Register(Ptramboom_30,6);
+                Word_to_Register(Ptramboom_35,7);
+                Word_to_Register(Ptramboom_40,8);
+                Word_to_Register(Ptramboom_45,9);
+                Word_to_Register(Ptramboom_50,10);
+                Word_to_Register(Ptramboom_55,11);
+                Word_to_Register(Ptramboom_60,12);
+                Word_to_Register(Ptramboom_65,13);
+                Word_to_Register(Ptramboom_70,14);
+                Word_to_Register(Ptramboom_75,15);
+                Word_to_Register(Ptramboom_80,16);
+                Word_to_Register(Ptramboom_85,17);
+                Word_to_Register(Ptramboom_90,18);
+                result = node.writeMultipleRegisters(40601, 18); // Gui bien len man hinh 1 lan dau load trang
+                node.clearTransmitBuffer();
+                node.writeSingleCoil(Trigger_Page_addr,0);      // Clear Trigger Page
+            }
+
+            if(node.readCoils(65,1) == node.ku8MBSuccess)
+            {
+                Trigger_Setting_Other1=node.getResponseBuffer(0);
+                node.clearResponseBuffer();
+            }
+
+            if(Trigger_Setting_Other1==1)     // Cài đặt Setting Other
+            {   uint16_t temp[18];
+                if (node.readHoldingRegisters(40601, 18) == node.ku8MBSuccess)
+                {
+                    for(uint8_t i=0;i<18;i++)
+                    {
+                        temp[i]=node.getResponseBuffer(i);
+                    }
+                    node.clearResponseBuffer();
+                    node.getResponseBuffer(0);
+                    
+                    Ptramboom_05=temp[0];
+                    Ptramboom_10=temp[1];
+                    Ptramboom_15=temp[2];
+                    Ptramboom_20=temp[3];
+                    Ptramboom_25=temp[4];
+                    Ptramboom_30=temp[5];
+                    Ptramboom_35=temp[6];
+                    Ptramboom_40=temp[7];
+                    Ptramboom_45=temp[8];
+                    Ptramboom_50=temp[9];
+                    Ptramboom_55=temp[10];
+                    Ptramboom_60=temp[11];
+                    Ptramboom_65=temp[12];
+                    Ptramboom_70=temp[13];
+                    Ptramboom_75=temp[14];
+                    Ptramboom_80=temp[15];
+                    Ptramboom_85=temp[16];
+                    Ptramboom_90=temp[17];
+
+                    preferences.putUInt("Ptramboom_05",Ptramboom_05);
+                    preferences.putUInt("Ptramboom_10",Ptramboom_10);
+                    preferences.putUInt("Ptramboom_15",Ptramboom_15);
+                    preferences.putUInt("Ptramboom_20",Ptramboom_20);
+                    preferences.putUInt("Ptramboom_25",Ptramboom_25);
+                    preferences.putUInt("Ptramboom_30",Ptramboom_30);
+                    preferences.putUInt("Ptramboom_35",Ptramboom_35);
+                    preferences.putUInt("Ptramboom_40",Ptramboom_40);
+                    preferences.putUInt("Ptramboom_45",Ptramboom_45);
+                    preferences.putUInt("Ptramboom_50",Ptramboom_50);
+                    preferences.putUInt("Ptramboom_55",Ptramboom_55);
+                    preferences.putUInt("Ptramboom_60",Ptramboom_60);
+                    preferences.putUInt("Ptramboom_65",Ptramboom_65);
+                    preferences.putUInt("Ptramboom_70",Ptramboom_70);
+                    preferences.putUInt("Ptramboom_75",Ptramboom_75);
+                    preferences.putUInt("Ptramboom_80",Ptramboom_80);
+                    preferences.putUInt("Ptramboom_85",Ptramboom_85);
+                    preferences.putUInt("Ptramboom_90",Ptramboom_90);
+                    Serial.println("Cap nhat %");
+                    node.writeSingleCoil(Trigger_Page_addr,1);      // Clear Trigger Page
+                 }
+                    node.writeSingleCoil(65,0);      // Clear Trigger_Setting_Other
+            }
+        }
+        break;
+
 
         default:
         {

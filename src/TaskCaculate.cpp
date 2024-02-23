@@ -497,6 +497,82 @@ void Calibtaitungdoan5do()
 		}
 }
 
+void Calibtaitungdoan5met()
+{
+		if((Length_value<=5))
+		{
+			W_value=W_value+(Ptramboom_05/(float)1000);
+		}
+		else if((Length_value>5)&&(Length_value<=10))
+		{
+			W_value=W_value+(Ptramboom_10/(float)1000);
+		}
+		else if((Length_value>10)&&(Length_value<=15))
+		{
+			W_value=W_value+(Ptramboom_15/(float)1000);
+		}
+		else if((Length_value>15)&&(Length_value<=20))
+		{
+			W_value=W_value+(Ptramboom_20/(float)1000);
+		}
+		else if((Length_value>20)&&(Length_value<=25))
+		{
+			W_value=W_value+(Ptramboom_25/(float)1000);
+		}
+		else if((Length_value>25)&&(Length_value<=30))
+		{
+			W_value=W_value+(Ptramboom_30/(float)1000);
+		}
+		else if((Length_value>30)&&(Length_value<=35))
+		{
+			W_value=W_value+(Ptramboom_35/(float)1000);
+		}
+		else if((Length_value>35)&&(Length_value<=40))
+		{
+			W_value=W_value+(Ptramboom_40/(float)1000);
+		}
+		else if((Length_value>40)&&(Length_value<=45))
+		{
+			W_value=W_value+(Ptramboom_45/(float)1000);
+		}
+		else if((Length_value>45)&&(Length_value<=50))
+		{
+			W_value=W_value+(Ptramboom_50/(float)1000);
+		}
+		else if((Length_value>50)&&(Length_value<=55))
+		{
+			W_value=W_value+(Ptramboom_55/(float)1000);
+		}
+		else if((Length_value>55)&&(Length_value<=60))
+		{
+			W_value=W_value+(Ptramboom_60/(float)1000);
+		}
+		else if((Length_value>60)&&(Length_value<=65))
+		{
+			W_value=W_value+(Ptramboom_65/(float)1000);
+		}
+		else if((Length_value>65)&&(Length_value<=70))
+		{
+			W_value=W_value+(Ptramboom_70/(float)1000);
+		}
+		else if((Length_value>70)&&(Length_value<=75))
+		{
+			W_value=W_value+(Ptramboom_75/(float)1000);
+		}
+		else if((Length_value>75)&&(Length_value<=80))
+		{
+			W_value=W_value+(Ptramboom_80/(float)1000);
+		}
+		else if((Length_value>80)&&(Length_value<=85))
+		{
+			W_value=W_value+(Ptramboom_85/(float)1000);
+		}
+		else if((Length_value>85)&&(Length_value<=90))
+		{
+			W_value=W_value+(Ptramboom_90/(float)1000);
+		}
+}
+
 void Task_Caculate_code( void * pvParameters )
 {
   for(;;)
@@ -513,6 +589,7 @@ void Task_Caculate_code( void * pvParameters )
         // W_value=Wheel_CalculateT()*1.1;
         W_value=Wheel_CalculateT();
         Calibtaitungdoan5do();
+        Calibtaitungdoan5met();
         Tinhtoantaimax_bangtai_phantramtai();
         if(MaxW_value==0)
         {
@@ -531,6 +608,7 @@ void Task_Caculate_code( void * pvParameters )
         L0_value=CalculateL0();
         W_value=Crawler_CalculateP();
         Calibtaitungdoan5do();
+        Calibtaitungdoan5met();
         Tinhtoantaimax_bangtai_phantramtai();
         if(MaxW_value==0)
         {
@@ -577,6 +655,7 @@ void Task_Caculate_code( void * pvParameters )
         Calib0_Banhlop();
         W_value=Wheel_CalculateT();
         Calibtaitungdoan5do();
+        Calibtaitungdoan5met();
         Tinhtoantaimax_bangtai_phantramtai();
         if(MaxW_value==0)
         {

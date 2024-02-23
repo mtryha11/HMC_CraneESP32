@@ -106,4 +106,25 @@ extern uint16_t Taiphantram_80;
 extern uint16_t Taiphantram_85;
 extern uint16_t Taiphantram_90;
 
+
+extern uint16_t Ptramboom_05;
+extern uint16_t Ptramboom_10;
+extern uint16_t Ptramboom_15;
+extern uint16_t Ptramboom_20;
+extern uint16_t Ptramboom_25;
+extern uint16_t Ptramboom_30;
+extern uint16_t Ptramboom_35;
+extern uint16_t Ptramboom_40;
+extern uint16_t Ptramboom_45;
+extern uint16_t Ptramboom_50;
+extern uint16_t Ptramboom_55;
+extern uint16_t Ptramboom_60;
+extern uint16_t Ptramboom_65;
+extern uint16_t Ptramboom_70;
+extern uint16_t Ptramboom_75;
+extern uint16_t Ptramboom_80;
+extern uint16_t Ptramboom_85;
+extern uint16_t Ptramboom_90;
+
+extern bool DigitalInput_4;
 #endif

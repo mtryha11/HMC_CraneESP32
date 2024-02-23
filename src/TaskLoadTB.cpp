@@ -2,9 +2,7 @@
 #include <TaskLoadTB.h>
 #include <Preferences.h>
 #include <ModbusRTU.h>
-
 Preferences preferences;
-
 #define SLAVE_ID 1
 ModbusRTU Napbangtai;
 
@@ -15,7 +13,6 @@ bool ADS_Type;
 void Task_LoadTB_code( void * pvParameters )
 {
   preferences.begin("HMC", false);
-  //preferences.begin("HMC1", false);
   device_type=            preferences.getUChar("DT",1);
   if(device_type>5)
   {
@@ -107,6 +104,25 @@ void Task_LoadTB_code( void * pvParameters )
   Taiphantram_85=         preferences.getUInt("Taiphantram_85",100);
   Taiphantram_90=         preferences.getUInt("Taiphantram_90",100);
 
+  Ptramboom_05=         preferences.getUInt("Ptramboom_05",0);
+  Ptramboom_10=         preferences.getUInt("Ptramboom_10",0);
+  Ptramboom_15=         preferences.getUInt("Ptramboom_15",0);
+  Ptramboom_20=         preferences.getUInt("Ptramboom_20",0);
+  Ptramboom_25=         preferences.getUInt("Ptramboom_25",0);
+  Ptramboom_30=         preferences.getUInt("Ptramboom_30",0);
+  Ptramboom_35=         preferences.getUInt("Ptramboom_35",0);
+  Ptramboom_40=         preferences.getUInt("Ptramboom_40",0);
+  Ptramboom_45=         preferences.getUInt("Ptramboom_45",0);
+  Ptramboom_50=         preferences.getUInt("Ptramboom_50",0);
+  Ptramboom_55=         preferences.getUInt("Ptramboom_55",0);
+  Ptramboom_60=         preferences.getUInt("Ptramboom_60",0);
+  Ptramboom_65=         preferences.getUInt("Ptramboom_65",0);
+  Ptramboom_70=         preferences.getUInt("Ptramboom_70",0);
+  Ptramboom_75=         preferences.getUInt("Ptramboom_75",0);
+  Ptramboom_80=         preferences.getUInt("Ptramboom_80",0);
+  Ptramboom_85=         preferences.getUInt("Ptramboom_85",0);
+  Ptramboom_90=         preferences.getUInt("Ptramboom_90",0);
+
   Length_value=Length_xich_nhap;
   if(Multi_Loadtable_State==1)
   {
@@ -131,18 +147,14 @@ void Task_LoadTB_code( void * pvParameters )
   Trigger_LT=1;
 
   Serial.begin(115200, SERIAL_8N1);
-  Serial.print("Taiphantram_05: ");Serial.println(Taiphantram_05);
-  Serial.print("Taiphantram_10: ");Serial.println(Taiphantram_10);
-  Serial.print("Taiphantram_15: ");Serial.println(Taiphantram_15);
-  Serial.print("Taiphantram_20: ");Serial.println(Taiphantram_20);
-  Serial.print("NVS "); Serial.println(preferences.freeEntries());
-  Serial.print("So hang: ");Serial.println(Sohang);
-  Serial.print("So cot: ");Serial.println(Socot);
-  Serial.print("Doi trong dang seting: ");Serial.println(Load_table_value);
-  for (uint8_t u=0;u<10;u++)
-  {
-    Serial.print("Doitrong "); Serial.print(u); Serial.print(": "); Serial.println((Doitrong[u]/(float)100),1);
-  }
+  // Serial.print("NVS "); Serial.println(preferences.freeEntries());
+  // Serial.print("So hang: ");Serial.println(Sohang);
+  // Serial.print("So cot: ");Serial.println(Socot);
+  // Serial.print("Doi trong dang seting: ");Serial.println(Load_table_value);
+  // for (uint8_t u=0;u<10;u++)
+  // {
+  //   Serial.print("Doitrong "); Serial.print(u); Serial.print(": "); Serial.println((Doitrong[u]/(float)100),1);
+  // }
 
   Napbangtai.begin(&Serial);
   Napbangtai.slave(SLAVE_ID);
@@ -160,8 +172,11 @@ void Task_LoadTB_code( void * pvParameters )
   }
   for(;;)
   {
-    // Napbangtai.task();
-
+    if(DigitalInput_4==1)
+    {
+      // Serial.println("AAAA");
+      Napbangtai.task();
+    }
     if(Napbangtai.Hreg(0)!=0)
     {
       Stt=      Napbangtai.Hreg(0);
@@ -252,61 +267,61 @@ void Task_LoadTB_code( void * pvParameters )
       if(temp==Doitrong[0]) // 
       {
         preferences.getBytes("Bangtai_1",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 1 - Mac dinh");
+        // Serial.println("Load Bang 1 - Mac dinh");
         Stt=1;
       }
       else if(temp==Doitrong[1])
       {
         preferences.getBytes("Bangtai_2",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 2");
+        // Serial.println("Load Bang 2");
         Stt=2;
       }
       else if(temp==Doitrong[2])
       {
         preferences.getBytes("Bangtai_3",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 3");
+        // Serial.println("Load Bang 3");
         Stt=3;
       }
       else if(temp==Doitrong[3])
       {
         preferences.getBytes("Bangtai_4",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 4");
+        // Serial.println("Load Bang 4");
         Stt=4;
       }
       else if(temp==Doitrong[4])
       {
         preferences.getBytes("Bangtai_5",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 5");
+        // Serial.println("Load Bang 5");
         Stt=5;
       }
       else if(temp==Doitrong[5])
       {
         preferences.getBytes("Bangtai_6",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 6");
+        // Serial.println("Load Bang 6");
         Stt=6;
       }
       else if(temp==Doitrong[6])
       {
         preferences.getBytes("Bangtai_7",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 7");
+        // Serial.println("Load Bang 7");
         Stt=7;
       }
       else if(temp==Doitrong[7])
       {
         preferences.getBytes("Bangtai_8",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 8");
+        // Serial.println("Load Bang 8");
         Stt=8;
       }
       else if(temp==Doitrong[8])
       {
         preferences.getBytes("Bangtai_9",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 9");
+        // Serial.println("Load Bang 9");
         Stt=9;
       }
       else if(temp==Doitrong[9])
       {
         preferences.getBytes("Bangtai_10",LT,(2*Sohang*Socot));
-        Serial.println("Load Bang 10");
+        // Serial.println("Load Bang 10");
         Stt=10;
       }
 

@@ -1,49 +1,78 @@
-// #include <TaskWifiOTA.h>
-// #include <Arduino.h>
-// #include <ESPmDNS.h>
-// #include <WiFi.h>
-// #include <AsyncTCP.h>
-// #include <ESPAsyncWebServer.h>
-// #include <AsyncElegantOTA.h>
+#if defined(ESP8266)
+  #include <ESP8266WiFi.h>
+  #include <WiFiClient.h>
+  #include <ESP8266WebServer.h>
+#elif defined(ESP32)
+  #include <WiFi.h>
+  #include <WiFiClient.h>
+  #include <WebServer.h>
+#endif
 
-// const char* ssid = "HMC";
-// const char* password = "12345678";
+#include <ElegantOTA.h>
+#include <ESPmDNS.h>
+// #include <HTTPClient.h>
 
-// AsyncWebServer server(80);
+#include <SPIFFS.h>
 
-// void Task_WifiOTA_code( void * pvParameters )
-// {
-//     Serial.begin(115200);
-//     WiFi.mode(WIFI_STA);
-//     WiFi.begin(ssid, password);
-//     Serial.println("");
-//     while (WiFi.status() != WL_CONNECTED) {
-//         delay(500);
-//         Serial.print(".");
-//     }
-//     Serial.println("");
-//     Serial.print("Connected to ");
-//     Serial.println(ssid);
-//     Serial.print("IP address: ");
+const char* ssid = "hmc";
+const char* password1 = "hoangminhim";
+const char* password = "hoangminhim";
 
-//     if(!MDNS.begin("hmc")) 
-//     {
-//         Serial.println("Error starting mDNS");
-//         return;
-//     }
+#if defined(ESP8266)
+  ESP8266WebServer server(80);
+#elif defined(ESP32)
+  WebServer server(80);
+#endif
+uint8_t retry=0;
 
-//     Serial.println(WiFi.localIP());
+void Task_WifiOTA_code( void * pvParameters )
+{
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password1);
 
-//     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-//         request->send(200, "text/plain", "hmc.local/update");
-//     });
 
-//     AsyncElegantOTA.begin(&server);    // Start ElegantOTA
-//     server.begin();
-//     Serial.println("HTTP server started");
+    while (retry<20)
+    {
+        if(WiFi.status() == WL_CONNECTED)
+        {
+            goto jump;
+        }
+        if (WiFi.status() != WL_CONNECTED) 
+        {
+            vTaskDelay(1500);
+            // Serial.print("Co gang ket noi Wifi lan thu ");
+            // Serial.println(retry);
+            retry++;
+        }
+    }
+    WiFi.disconnect();
+    // Serial.println("Phat Wifi!!");
+    WiFi.softAP(WiFi.macAddress(),password);
+    jump:
+  // Initialize mDNS
 
-//     for(;;)
-//     {
-//         vTaskDelay(50);
-//     }
-// }
+    
+
+  if (!MDNS.begin("hmc")) {   // Set the hostname to "esp32.local"
+    // Serial.println("Error setting up MDNS responder!");
+    while(1) {
+      vTaskDelay(1000);
+    }
+  }
+  // Serial.println("mDNS responder started");
+
+    server.on("/", []() {
+      server.send(200, "text/plain", "HMC");
+    });
+
+    ElegantOTA.begin(&server);    // Start ElegantOTA
+    server.begin();
+    // Serial.println("HTTP server started");
+
+    for(;;)
+    {
+        server.handleClient();
+        ElegantOTA.loop();
+        vTaskDelay(100);
+    }
+}

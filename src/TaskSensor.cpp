@@ -11,6 +11,7 @@ Adafruit_ADS1115 ads2;     /* Use this for the 12-bit version */
 #define pin_DIN1  36
 #define pin_DIN2  39
 #define pin_DIN3  34
+#define pin_DIN4  14
 
 const int LOADCELL1_DOUT_PIN = 19;
 const int LOADCELL1_SCK_PIN = 18;
@@ -35,6 +36,7 @@ void Task_Sensor_code( void * pvParameters )
   pinMode(pin_DIN1,INPUT);
   pinMode(pin_DIN2,INPUT);
   pinMode(pin_DIN3,INPUT);
+  pinMode(pin_DIN4,INPUT_PULLUP);
 
   scale1.begin(LOADCELL1_DOUT_PIN, LOADCELL1_SCK_PIN);
   scale2.begin(LOADCELL2_DOUT_PIN, LOADCELL2_SCK_PIN);
@@ -81,17 +83,8 @@ void Task_Sensor_code( void * pvParameters )
     ReadADS1();
     // ReadADS2();
 
-    if(millis()-timesensor>1000)
+    if(millis()-timesensor>3000)
     {
-      // Loadcell1_value_calib0=15.0;
-      // Loadcell1_raw_calib0=9105576;
-      // Loadcell1_value_calib1=22.5;
-      // Loadcell1_raw_calib1=11558866;
-
-      // Loadcell2_value_calib0=10.8;
-      // Loadcell2_raw_calib0=8679065;
-      // Loadcell2_value_calib1=24.95;
-      // Loadcell2_raw_calib1=12094591;
 
       Serial.print("\t| Loadcell 1 Raw:\t");
       Serial.println(Loadcell1_raw);
@@ -104,21 +97,13 @@ void Task_Sensor_code( void * pvParameters )
       Serial.println(Loadcell2_value);
 
       Serial.println("--------------------------------------------");
-      // Serial.print("ADS_Type: ");  Serial.println(ADS_Type);
       Serial.print("Length_raw: ");  Serial.print(Length_raw);  Serial.println("adc");
       Serial.print("Angle_raw: ");   Serial.print(Angle_raw);   Serial.println("adc");
       Serial.print("P1_raw: ");      Serial.print(P1_raw);      Serial.println("mV");
       Serial.print("P2_raw: ");      Serial.print(P2_raw);      Serial.println("mV");
-      // Serial.print("P3_raw: ");      Serial.print(P3_raw);      Serial.println("mV");
-      // Serial.print("P4_raw: ");      Serial.print(P4_raw);      Serial.println("mV");
-      // Serial.print("P5_raw: ");      Serial.print(P5_raw);      Serial.println("mV");
-      // Serial.print("uc_Voltage: ");  Serial.print(uc_Voltage);  Serial.println("V");
       timesensor=millis();
     }
-    
-    // Serial.print("Mem 0: "); Serial.println(eeprom.read_1_byte(0));
-    // Serial.print("Mem 1: "); Serial.println(eeprom.read_1_byte(1));
-    // Serial.print("Mem 2: "); Serial.println(eeprom.read_1_byte(2));
+
 
     vTaskDelay(50);
   }
@@ -183,6 +168,7 @@ void ReadInput()
   DigitalInput_1=!digitalRead(pin_DIN1);
   DigitalInput_2=!digitalRead(pin_DIN2);
   DigitalInput_3=!digitalRead(pin_DIN3);
+  DigitalInput_4=!digitalRead(pin_DIN4);
 }
 
 void ReadLoadcell1()

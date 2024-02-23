@@ -10,7 +10,7 @@
 #include "TaskAlarm.h"
 #include "TaskSensor.h"
 #include "TaskLoadTB.h"
-// #include "TaskWifiOTA.h"
+#include "TaskWifiOTA.h"
 // #include "TaskCAN.h"
 
 uint8_t result_comunication_HMI;
@@ -138,6 +138,7 @@ float Length_alarm_max;         // L7
 bool DigitalInput_1;
 bool DigitalInput_2;
 bool DigitalInput_3;
+bool DigitalInput_4;
 
 volatile uint16_t Sohang;
 volatile uint16_t Socot;    
@@ -163,6 +164,24 @@ uint16_t Taiphantram_80;
 uint16_t Taiphantram_85;
 uint16_t Taiphantram_90;
 
+uint16_t Ptramboom_05;
+uint16_t Ptramboom_10;
+uint16_t Ptramboom_15;
+uint16_t Ptramboom_20;
+uint16_t Ptramboom_25;
+uint16_t Ptramboom_30;
+uint16_t Ptramboom_35;
+uint16_t Ptramboom_40;
+uint16_t Ptramboom_45;
+uint16_t Ptramboom_50;
+uint16_t Ptramboom_55;
+uint16_t Ptramboom_60;
+uint16_t Ptramboom_65;
+uint16_t Ptramboom_70;
+uint16_t Ptramboom_75;
+uint16_t Ptramboom_80;
+uint16_t Ptramboom_85;
+uint16_t Ptramboom_90;
 
 
 uint16_t LT[800];
