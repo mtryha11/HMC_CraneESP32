@@ -12,6 +12,16 @@ void Calculate_H_R()
   float temp1=(Angle_value*PI/180);
   R_value=cos(temp1)*Length_value + Parar;
   H_value=sin(temp1)*Length_value + Parah;
+
+  if((Canphu==1) || (Canphu==2) || (Canphu==3) || (Canphu==4))
+  {
+    float temp2;
+    temp2=(((180-Angle_aux_value)-(90-Angle_value)+90)*PI/180);
+    R_aux_value=cos(temp2)*Length_aux_value;
+    R_value=R_value+R_aux_value;
+    H_aux_value=sin(temp2)*Length_aux_value;
+    H_value=H_value+H_aux_value;
+  }
 }
 
 void Calculate_Angle()
@@ -663,6 +673,26 @@ void Task_Caculate_code( void * pvParameters )
         }
       }
       break;
+
+      case(6):
+      {
+        Calculate_Angle();
+        Calculate_H_R();
+        Calculate_Loadcell();
+        Calib0_Banhxich();
+        L0_value=CalculateL0();
+        W_value=Crawler_CalculateP();
+        Calibtaitungdoan5do();
+        Calibtaitungdoan5met();
+        Tinhtoantaimax_bangtai_phantramtai();
+        if(MaxW_value==0)
+        {
+          Loadpercent=100;
+        }
+      }
+      break;
+
+
       default:
       break;
 
@@ -676,43 +706,43 @@ void Task_Caculate_code( void * pvParameters )
 
 void Tinhtoantaimax_bangtai_phantramtai()
 {
-if((Length_value <(LT[Socot-1]*0.01f)) && ((R_value <(LT[Socot*(Sohang-1)]*0.01f))))	
-			{
-				MaxW_value=CalculateMaxWe();
-				
-				if(Main_Aux==0) 
-				{
-					if((ParaCabW*Cab_main_number) < MaxW_value)     // Cap chinh qua tai
-          {
-						MaxW_value=ParaCabW*Cab_main_number;
-					}
-				} 
-				else 
-				{
-					if((ParaCabW*Cab_aux_number) < MaxW_value)    
-          {
-						MaxW_value=ParaCabW*Cab_aux_number;
-					}
-				}
-				
-				if(W_value>0) 
-				{
-					Loadpercent=(uint16_t)(W_value/MaxW_value*100);
-					if(Loadpercent>100) 
-					{
-						Loadpercent=100;
-					}
-				} 
-				else 
-				{
-					Loadpercent=0;
-				}
-			}
-			else 
-			{
-				MaxW_value=0.1;
-				Loadpercent=100;
-			}
+  {
+    if((Length_value <(LT[Socot-1]*0.01f)) && ((R_value <(LT[Socot*(Sohang-1)]*0.01f))))	
+  	{
+  		MaxW_value=CalculateMaxWe();
+  		if(Main_Aux==0) 
+  		{
+  			if((ParaCabW*Cab_main_number) < MaxW_value)     // Cap chinh qua tai
+        {
+  				MaxW_value=ParaCabW*Cab_main_number;
+  			}
+  		} 
+  		else 
+  		{
+  			if((ParaCabW*Cab_aux_number) < MaxW_value)    
+        {
+  				MaxW_value=ParaCabW*Cab_aux_number;
+  			}
+  		}
+  		if(W_value>0) 
+  		{
+  			Loadpercent=(uint16_t)(W_value/MaxW_value*100);
+  			if(Loadpercent>100) 
+  			{
+  				Loadpercent=100;
+  			}
+  		} 
+  		else 
+  		{
+  			Loadpercent=0;
+  		}
+  	}
+  	else 
+  	{
+  		MaxW_value=0.1;
+  		Loadpercent=100;
+  	}
+  }
 }
 
 float CalculateMaxWe()

@@ -52,6 +52,16 @@ extern float ParaK4;
 
 extern float Angle_value; 
 extern float Length_value;
+
+extern uint8_t Canphu;
+extern float Length_aux_value;
+extern float Angle_aux_value;
+extern float R_aux_value;
+extern float H_aux_value;
+extern float R_total;
+extern float H_total;
+
+
 extern float W_value;
 extern float MaxW_value;
 extern uint16_t Cab_number;

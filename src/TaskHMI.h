@@ -50,6 +50,9 @@ extern const uint8_t Led1;
 #define SerialRS485 Serial2
 const uint8_t DE_pin = 4;
 
+
+extern uint8_t Canphu;
+
 extern volatile uint16_t Stt;
 extern uint16_t Doitrong[10];
 extern uint8_t result_comunication_HMI;

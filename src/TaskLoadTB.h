@@ -84,6 +84,13 @@ extern volatile uint16_t Stt;
 extern float Load_table_value;   
 extern uint16_t Doitrong[10];
 extern uint16_t LT[800];
+
+extern uint16_t LT_main[380];
+extern uint16_t LT_canphu_10_12[84];
+extern uint16_t LT_canphu_30_12[84];
+extern uint16_t LT_canphu_10_15[84];
+extern uint16_t LT_canphu_30_15[84];
+
 extern volatile uint8_t is_LT_ok;
 extern bool Trigger_LT;
 
@@ -126,5 +133,6 @@ extern uint16_t Ptramboom_80;
 extern uint16_t Ptramboom_85;
 extern uint16_t Ptramboom_90;
 
+extern uint8_t Canphu;
 extern bool DigitalInput_4;
 #endif

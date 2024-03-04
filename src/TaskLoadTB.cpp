@@ -262,78 +262,56 @@ void Task_LoadTB_code( void * pvParameters )
 
     if(Trigger_LT==1)
     {
-      uint16_t temp;
-      temp=Load_table_value*100;
-      if(temp==Doitrong[0]) // 
+      if(Canphu==0)
       {
-        preferences.getBytes("Bangtai_1",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 1 - Mac dinh");
-        Stt=1;
-      }
-      else if(temp==Doitrong[1])
-      {
-        preferences.getBytes("Bangtai_2",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 2");
-        Stt=2;
-      }
-      else if(temp==Doitrong[2])
-      {
-        preferences.getBytes("Bangtai_3",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 3");
-        Stt=3;
-      }
-      else if(temp==Doitrong[3])
-      {
-        preferences.getBytes("Bangtai_4",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 4");
-        Stt=4;
-      }
-      else if(temp==Doitrong[4])
-      {
-        preferences.getBytes("Bangtai_5",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 5");
-        Stt=5;
-      }
-      else if(temp==Doitrong[5])
-      {
-        preferences.getBytes("Bangtai_6",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 6");
-        Stt=6;
-      }
-      else if(temp==Doitrong[6])
-      {
-        preferences.getBytes("Bangtai_7",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 7");
-        Stt=7;
-      }
-      else if(temp==Doitrong[7])
-      {
-        preferences.getBytes("Bangtai_8",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 8");
-        Stt=8;
-      }
-      else if(temp==Doitrong[8])
-      {
-        preferences.getBytes("Bangtai_9",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 9");
-        Stt=9;
-      }
-      else if(temp==Doitrong[9])
-      {
-        preferences.getBytes("Bangtai_10",LT,(2*Sohang*Socot));
-        // Serial.println("Load Bang 10");
-        Stt=10;
+        for(uint16_t temp=0;temp < 381;temp++)
+        {
+          LT[temp]=LT_main[temp];
+          Sohang=22;
+          Socot=13;
+        }
       }
 
-      
-      for(uint8_t i=0;i<Sohang;i++) // Show bang tai
+      if(Canphu==1)
       {
-        for(uint8_t j=0;j<Socot;j++)
+      for(uint16_t temp=0;temp < 85;temp++)
         {
-          Serial.print(LT[(i*Socot)+j]); Serial.print("\t");
+          LT[temp]=LT_canphu_10_12[temp];
+          Sohang=12;
+          Socot=7;
         }
-        Serial.println();
       }
+
+      if(Canphu==2)
+      {
+      for(uint16_t temp=0;temp < 85;temp++)
+        {
+          LT[temp]=LT_canphu_30_12[temp];
+          Sohang=12;
+          Socot=7;
+        }
+      }
+
+      if(Canphu==3)
+      {
+      for(uint16_t temp=0;temp < 85;temp++)
+        {
+          LT[temp]=LT_canphu_10_15[temp];
+          Sohang=12;
+          Socot=7;
+        }
+      }
+
+      if(Canphu==4)
+      {
+      for(uint16_t temp=0;temp < 85;temp++)
+        {
+          LT[temp]=LT_canphu_30_15[temp];
+          Sohang=12;
+          Socot=7;
+        }
+      }
+
       Serial.println("-------------------------------------------------");
       Trigger_LT=0;
     }
