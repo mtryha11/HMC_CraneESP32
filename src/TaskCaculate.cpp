@@ -7,21 +7,22 @@
 extern ModbusMaster node;
 extern Preferences preferences;
 
-void Calculate_H_R()
-{
-  float temp1=(Angle_value*PI/180);
-  R_value=cos(temp1)*Length_value + Parar;
-  H_value=sin(temp1)*Length_value + Parah;
+void Calculate_H_R(void) {
+  const double a  = Angle_value * M_PI / 180.0;
 
-  if((Canphu==1) || (Canphu==2) || (Canphu==3) || (Canphu==4))
-  {
-    float temp2;
-    temp2=(((180-Angle_aux_value)-(90-Angle_value)+90)*PI/180);
-    R_aux_value=cos(temp2)*Length_aux_value;
-    R_value=R_value+R_aux_value;
-    H_aux_value=sin(temp2)*Length_aux_value;
-    H_value=H_value+H_aux_value;
+  double R = cos(a) * Length_value + Parar;
+  double H = sin(a) * Length_value + Parah;
+
+  if (Canphu > 0) {
+    double abs = Angle_value - Angle_aux_value;
+
+    const double b = abs * M_PI / 180.0;
+    R += cos(b) * Length_aux_value;
+    H += sin(b) * Length_aux_value;
   }
+
+  R_value = R;
+  H_value = H;
 }
 
 void Calculate_Angle()
@@ -692,6 +693,24 @@ void Task_Caculate_code( void * pvParameters )
       }
       break;
 
+      case(7):
+      {
+        Calculate_Length();
+        Calculate_Press();
+        Calculate_Angle();
+        Calculate_H_R();
+        Calib0_Banhlop();
+        // W_value=Wheel_CalculateT()*1.1;
+        W_value=Wheel_CalculateT();
+        Calibtaitungdoan5do();
+        Calibtaitungdoan5met();
+        Tinhtoantaimax_bangtai_phantramtai();
+        if(MaxW_value==0)
+        {
+          Loadpercent=100;
+        }
+      }
+      break;
 
       default:
       break;

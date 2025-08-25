@@ -24,6 +24,7 @@ bool is_hx7112_init_ok=0;
 bool is_rom_init_ok=0;
 HX711 scale1;
 HX711 scale2;
+extern uint8_t Canphu;
 
 extern bool ADS_Type;
 int16_t adc1, adc2, adc3, adc4, adc5, adc6, adc7, adc8;
@@ -101,6 +102,7 @@ void Task_Sensor_code( void * pvParameters )
       Serial.print("Angle_raw: ");   Serial.print(Angle_raw);   Serial.println("adc");
       Serial.print("P1_raw: ");      Serial.print(P1_raw);      Serial.println("mV");
       Serial.print("P2_raw: ");      Serial.print(P2_raw);      Serial.println("mV");
+      Serial.print("Canphu: ");      Serial.println(Canphu);
       timesensor=millis();
     }
 

@@ -15,9 +15,9 @@ void setup() {
   //// Khoi tao Task ////
   
   xTaskCreate(Task_Alarm_code,    "Task_Alarm",         1004,   NULL, 8, &Task_Alarm);    delay(50);
-  xTaskCreate(Task_WifiOTA_code,  "Task_WifiOTA",       5000,  NULL, 7, &Task_WifiOTA);    delay(50);
-  xTaskCreate(Task_LoadTB_code,   "Task_LoadTable",     40000,  NULL, 2, &Task_LoadTB);    delay(50); 
-  xTaskCreate(Task_HMI_code,      "Task_HMI",           8000,  NULL, 5, &Task_HMI);    delay(50); 
+  // xTaskCreatePinnedToCore(Task_WifiOTA_code,  "Task_WifiOTA",       10000,  NULL, 7, &Task_Alarm,   0  );    delay(50);
+  xTaskCreate(Task_LoadTB_code,   "Task_LoadTable",     20000,  NULL, 6, &Task_LoadTB);    delay(50); 
+  xTaskCreate(Task_HMI_code,      "Task_HMI",           8000,  NULL, 2, &Task_HMI);    delay(50); 
   xTaskCreate(Task_Debug_code,    "Task_Debug",         5000,  NULL, 1, &Task_Debug);    delay(50); 
   xTaskCreate(Task_Caculate_code, "Task_Cacluate",      8000,  NULL, 3, &Task_Caculate);    delay(50); 
   xTaskCreate(Task_Sensor_code,   "Task_Sensor",        5000,  NULL, 4, &Task_Sensor);    delay(50);

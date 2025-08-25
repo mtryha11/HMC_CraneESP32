@@ -78,8 +78,8 @@ float Angle_value;
 float Length_value;
 
 uint8_t Canphu;
-float Length_aux_value;
-float Angle_aux_value;
+float Length_aux_value=12.2;
+float Angle_aux_value=30;
 float R_aux_value;
 float H_aux_value;
 float R_total;

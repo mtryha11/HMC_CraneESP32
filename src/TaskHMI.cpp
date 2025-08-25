@@ -175,6 +175,15 @@ void Task_HMI_code( void * pvParameters )
                     // Serial.println("Chuyen trang banh xich");
                 }
                 break;
+
+                case(7):
+                {   
+                    Trigger_Main_Aux=1;
+                    node.writeSingleCoil(20,1); // Clear Trigger_Main_Aux
+                    result = node.writeSingleRegister(Screen_no_control_addr,22);
+                    // Serial.println("Chuyen trang banh xich");
+                }
+                break;
             }
         }
         break;
@@ -636,7 +645,7 @@ void Task_HMI_code( void * pvParameters )
                 {
                     
                     device_type=node.getResponseBuffer(0);
-                    if(device_type>6)
+                    if(device_type>9)
                     {
                         device_type=1;
                     }
@@ -1529,14 +1538,116 @@ void Task_HMI_code( void * pvParameters )
         }
         break;
 
+        case 22:
+        {
+            if(node.readCoils(19,3) == node.ku8MBSuccess)  // Read Trigger_Cab_Input
+            {
+                Trigger_Loadtable=node.getResponseBuffer(0) & bit(0);
+                Trigger_Main_Aux=node.getResponseBuffer(0) & bit(1);
+                Trigger_Cab_Input=node.getResponseBuffer(0) & bit(2);
+                node.clearResponseBuffer();
+            }
+
+            if(DigitalInput_1==1)               // Hien thi ngat cap len man hinh
+            {
+                node.writeSingleCoil(31,0);
+            }
+            else
+            {
+                node.writeSingleCoil(31,1);
+            }
+
+            if(Trigger_Main_Aux==1)
+            {
+                if(node.readCoils(35, 1) == node.ku8MBSuccess)
+                {
+                    Main_Aux=node.getResponseBuffer(0);
+                    node.clearResponseBuffer();
+                    preferences.putBool("Main_Aux",Main_Aux);
+                }
+                node.writeSingleCoil(20,0); // Clear Trigger_Main_Aux
+                // Serial.print("Vua chon cap: "); Serial.println(Main_Aux);        /// 1 La cap phu, 0 la cap chinh
+            }
+
+            if(Trigger_Cab_Input==1)
+            {
+                node.readHoldingRegisters(Cab_number_addr, 1);
+                if(Main_Aux==1)
+                {
+                    Cab_aux_number=node.getResponseBuffer(0);
+                    preferences.putShort("Cab_aux_num",Cab_aux_number);
+                    // Serial.print("So soi cap phu vua nhap: "); Serial.println(Cab_aux_number);
+                }
+                else
+                {
+                    Cab_main_number=node.getResponseBuffer(0);
+                    preferences.putShort("Cab_main_num",Cab_main_number);
+                    // Serial.print("So soi cap chinh vua nhap: "); Serial.println(Cab_main_number);                    
+                }
+                node.clearResponseBuffer();
+                node.writeSingleCoil(21,0); // Clear Trigger_Cab_Input
+            }
+
+            if(Trigger_Loadtable==1)
+            {
+                uint16_t temp[2];
+                node.readHoldingRegisters(Load_table_value_addr, 2);
+                temp[0]=node.getResponseBuffer(0);
+                temp[1]=node.getResponseBuffer(1);
+                node.clearResponseBuffer();
+                Load_table_value=bytesToFloat(&temp[0]);
+
+                preferences.putFloat("LT_value",Load_table_value);
+                node.clearResponseBuffer();
+                Trigger_LT=1;
+                node.writeSingleCoil(19,0); // Clear Trigger_Loadtable
+            }
+
+            if(Main_Aux==1)
+                Cab_number = Cab_aux_number;
+            else
+                Cab_number = Cab_main_number;
+
+            Float_to_Register(Angle_value,1,2);
+            Float_to_Register(Length_value,3,4);
+            if(W_value<0)
+            {
+                Float_to_Register(0-W_value,5,6);
+            }
+            else
+            {
+                Float_to_Register(W_value,5,6);
+            }
+            Float_to_Register(MaxW_value,7,8);
+            Word_to_Register(Cab_number,9);
+            //Word_to_Register(Load_stt,10);
+            Float_to_Register(R_value,11,12);
+            Float_to_Register(H_value,13,14);
+            Word_to_Register(Loadpercent,15);
+            result = node.writeMultipleRegisters(Angle_value_addr, 15);   // Gui bien len man hinh
+            node.clearTransmitBuffer();
+
+            uint8_t temp1;
+            temp1=((!Stt_LoadSet)<<1) | (!Stt_LoadHi);
+            node.setTransmitBuffer(0, temp1);
+            result = node.writeMultipleCoils(56, 2);
+            node.clearTransmitBuffer();
+
+            uint8_t temp;
+            temp=((!Stt_AngleHi)<<6) | ((!Stt_AngleSet)<<5) | ((!Stt_LengthHi)<<3) | ((!Stt_LengthLow)<<2) | ((!Stt_LoadHi)<<1) | (!Stt_LoadSet);
+            node.setTransmitBuffer(0, temp);
+            result = node.writeMultipleCoils(11, 7);
+            node.clearTransmitBuffer();
+
+        }
+        break;
+
         default:
         {
             //result = node.writeSingleRegister(Screen_no_control_addr,0x02);
         }
         break;
     }
-    // Serial.print("Task HMI running on: ");
-    // Serial.println(xPortGetCoreID());
     digitalWrite(Led1, !digitalRead(Led1));
     vTaskDelay(200);
   } 

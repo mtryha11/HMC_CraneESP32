@@ -14,7 +14,16 @@ void Task_LoadTB_code( void * pvParameters )
 {
   preferences.begin("HMC", false);
   device_type=            preferences.getUChar("DT",1);
-  if(device_type>5)
+  if (device_type != 6 && device_type != 7)
+  {
+    Canphu=0;
+  }
+  else
+  {
+    Canphu=            preferences.getUChar("Jib",0);
+  }
+  
+  if(device_type>9)
   {
     device_type=1;
   }
