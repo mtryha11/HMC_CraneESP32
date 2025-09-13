@@ -49,99 +49,73 @@ void RelayTestMode()
 
 void Task_Alarm_code( void * pvParameters )
 {
-pinMode(Pin_CabMax,OUTPUT); 
-pinMode(Pin_AngleHi,OUTPUT); 
-pinMode(Pin_AngleSet,OUTPUT); 
-pinMode(Pin_LengthHi,OUTPUT); 
-pinMode(Pin_LengthLow,OUTPUT); 
-pinMode(Pin_LoadHi,OUTPUT); 
-pinMode(Pin_LoadSet,OUTPUT); 
+  // 1) Đặt trạng thái phần mềm về OFF ngay từ đầu
+  Stt_CabMax   = 0;
+  Stt_AngleHi  = 0;
+  Stt_AngleSet = 0;
+  Stt_LengthHi = 0;
+  Stt_LengthLow= 0;
+  Stt_LoadHi   = 0;
+  Stt_LoadSet  = 0;
 
-digitalWrite(Pin_CabMax,LOW);
-digitalWrite(Pin_AngleHi,LOW);
-digitalWrite(Pin_AngleSet,LOW);
-digitalWrite(Pin_LengthHi,LOW);
-digitalWrite(Pin_LengthLow,LOW);
-digitalWrite(Pin_LoadHi,LOW);
-digitalWrite(Pin_LoadSet,LOW);
+  // 2) Chuẩn bị mức LOW trước khi chuyển sang OUTPUT
+  //    Với chân strap/nhạy (ví dụ GPIO12), kéo xuống tạm thời để tránh trôi
+  pinMode(Pin_CabMax,   INPUT_PULLDOWN); digitalWrite(Pin_CabMax,   LOW); pinMode(Pin_CabMax,   OUTPUT);
+  pinMode(Pin_AngleHi,  INPUT_PULLDOWN); digitalWrite(Pin_AngleHi,  LOW); pinMode(Pin_AngleHi,  OUTPUT);
+  pinMode(Pin_AngleSet, INPUT_PULLDOWN); digitalWrite(Pin_AngleSet, LOW); pinMode(Pin_AngleSet, OUTPUT);
+  pinMode(Pin_LengthHi, INPUT_PULLDOWN); digitalWrite(Pin_LengthHi, LOW); pinMode(Pin_LengthHi, OUTPUT);
+  pinMode(Pin_LengthLow,INPUT_PULLDOWN); digitalWrite(Pin_LengthLow,LOW); pinMode(Pin_LengthLow,OUTPUT);
+  pinMode(Pin_LoadHi,   INPUT_PULLDOWN); digitalWrite(Pin_LoadHi,   LOW); pinMode(Pin_LoadHi,   OUTPUT);  // GPIO12: strap pin
+  pinMode(Pin_LoadSet,  INPUT_PULLDOWN); digitalWrite(Pin_LoadSet,  LOW); pinMode(Pin_LoadSet,  OUTPUT);
+
+  // 3) Khẳng định lại mức LOW (an toàn kép)
+  digitalWrite(Pin_CabMax,   LOW);
+  digitalWrite(Pin_AngleHi,  LOW);
+  digitalWrite(Pin_AngleSet, LOW);
+  digitalWrite(Pin_LengthHi, LOW);
+  digitalWrite(Pin_LengthLow,LOW);
+  digitalWrite(Pin_LoadHi,   LOW);
+  digitalWrite(Pin_LoadSet,  LOW);
+
+  // (tuỳ chọn) chờ 10–20ms để module relay ổn định nguồn đầu vào
+  vTaskDelay(pdMS_TO_TICKS(20));
 
   for(;;)
   {
+    // Giữ test mode như hiện tại (đang luôn chạy). Nếu muốn chỉ chạy khi Mode_Test_Relay=1,
+    // bạn có thể bọc điều kiện nhưng mình không tự ý đổi logic.
     RelayTestMode();
+
     if(Page_status!=12)
     {
       ///// Process Angle Alarm ///////
-      if(Angle_value<Angle_alarm_set)
-      {
-        Stt_AngleSet=1;
-        Stt_AngleHi=0;
+      if(Angle_value<Angle_alarm_set) {
+        Stt_AngleSet=1; Stt_AngleHi=0;
+      } else if(Angle_value<Angle_alarm_max) {
+        Stt_AngleSet=0; Stt_AngleHi=0;
+      } else {
+        Stt_AngleSet=0; Stt_AngleHi=1;
       }
-      else if((Angle_value>=Angle_alarm_set) && (Angle_value<Angle_alarm_max))
-      {
-        Stt_AngleSet=0;
-        Stt_AngleHi=0;
-      }
-      else
-      {
-        Stt_AngleSet=0;
-        Stt_AngleHi=1;
-      }
-      ///// Process Angle Alarm ///////
 
       ///// Process Length Alarm Low ///////
-      if(Length_value<Length_alarm_min)
-      {
-        Stt_LengthLow=1;
-      }
-      else
-      {
-        Stt_LengthLow=0;
-      }
-      ///// Process Length Alarm Low ///////
+      Stt_LengthLow = (Length_value<Length_alarm_min) ? 1 : 0;
 
       ///// Process Length Alarm Hi ///////
-      if(Length_value>=Length_alarm_max)
-      {
-        Stt_LengthHi=1;
-      }
-      else
-      {
-        Stt_LengthHi=0;
-      }
-      ///// Process Length Alarm Hi ///////
+      Stt_LengthHi  = (Length_value>=Length_alarm_max) ? 1 : 0;
 
       ///// Process Load Alarm ///////
-      if(Loadpercent<Load_alarm_set)
-      {
-        Stt_LoadHi=0;
-        Stt_LoadSet=0;
-        Load_stt=0;
+      if(Loadpercent<Load_alarm_set) {
+        Stt_LoadHi=0; Stt_LoadSet=0; Load_stt=0;
+      } else if(Loadpercent<(Load_alarm_max-0.1)) {
+        Stt_LoadHi=0; Stt_LoadSet=1; Load_stt=1;
+      } else {
+        Stt_LoadHi=1; Stt_LoadSet=0; Load_stt=2;
       }
-      else if((Loadpercent>=Load_alarm_set) && (Loadpercent<(Load_alarm_max-0.1)))
-      {
-        Stt_LoadHi=0;
-        Stt_LoadSet=1;
-        Load_stt=1;
-      }
-      else if(Loadpercent>=(Load_alarm_max-0.1))
-      {
-        Stt_LoadHi=1;
-        Stt_LoadSet=0;
-        Load_stt=2;
-      }
-      ///// Process Load Alarm ///////
 
-    if(DigitalInput_1==1)
-    {
-      Stt_CabMax=1;
-    }
-    else
-    {
-      Stt_CabMax=0;
+      // DigitalInput_1 kích CabMax
+      Stt_CabMax = (DigitalInput_1==1) ? 1 : 0;
     }
 
-    }
-    //Serial.println("TaskRelay");
-    vTaskDelay(100);
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
