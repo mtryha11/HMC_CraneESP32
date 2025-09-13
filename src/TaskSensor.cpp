@@ -42,26 +42,16 @@ void Task_Sensor_code( void * pvParameters )
   scale1.begin(LOADCELL1_DOUT_PIN, LOADCELL1_SCK_PIN);
   scale2.begin(LOADCELL2_DOUT_PIN, LOADCELL2_SCK_PIN);
 
-  // if(ADS_Type==1)//Dung
-  // {
-    Wire.setPins(21,22);
-  // }
-  // else
-  // {
-  //   Wire.setPins(22,21);
-  // }
-  
-  Wire.setClock(100000);
+  Wire.setPins(21,22);
+  Wire.begin(21, 22, 400000);   // 400 kHz để tăng throughput
+  Wire.setClock(400000);        // đảm bảo clock
 
-  if (ads1.begin(0x48)) 
-  {
+  if (ads1.begin(0x48)) {
     ads1.setGain(GAIN_ONE);
-    ads1.setDataRate(RATE_ADS1115_8SPS);
-    is_ads1_init_ok=1;
-  }
-  else
-  {
-    is_ads1_init_ok=0;
+    ads1.setDataRate(RATE_ADS1115_128SPS);  // 128SPS hoặc 250SPS
+    is_ads1_init_ok = 1;
+  } else {
+    is_ads1_init_ok = 0;
   }
 
   // if (ads2.begin(0x49)) 
@@ -79,82 +69,104 @@ void Task_Sensor_code( void * pvParameters )
   {
     ReadLoadcell1();
     ReadLoadcell2();
-    //Loadcell1_raw=Loadcell2_raw;
     ReadInput();
     ReadADS1();
     // ReadADS2();
 
-    if(millis()-timesensor>3000)
+    // In log mỗi ~3000 ms an toàn rollover
+    if ((uint32_t)(millis() - (uint32_t)timesensor) > 3000U)
     {
+      Serial.print("\t| Loadcell 1 Raw:\t");    Serial.println(Loadcell1_raw);
+      Serial.print("\t| Loadcell 1 Value:\t");  Serial.println(Loadcell1_value);
 
-      Serial.print("\t| Loadcell 1 Raw:\t");
-      Serial.println(Loadcell1_raw);
-      Serial.print("\t| Loadcell 1 Value:\t");
-      Serial.println(Loadcell1_value);
-
-      Serial.print("\t| Loadcell 2 Raw:\t");
-      Serial.println(Loadcell2_raw);
-      Serial.print("\t| Loadcell 2 Value:\t");
-      Serial.println(Loadcell2_value);
+      Serial.print("\t| Loadcell 2 Raw:\t");    Serial.println(Loadcell2_raw);
+      Serial.print("\t| Loadcell 2 Value:\t");  Serial.println(Loadcell2_value);
 
       Serial.println("--------------------------------------------");
-      Serial.print("Length_raw: ");  Serial.print(Length_raw);  Serial.println("adc");
-      Serial.print("Angle_raw: ");   Serial.print(Angle_raw);   Serial.println("adc");
-      Serial.print("P1_raw: ");      Serial.print(P1_raw);      Serial.println("mV");
-      Serial.print("P2_raw: ");      Serial.print(P2_raw);      Serial.println("mV");
+      Serial.print("Length_raw: ");  Serial.print(Length_raw);  Serial.println(" adc");
+      Serial.print("Angle_raw: ");   Serial.print(Angle_raw);   Serial.println(" adc");
+      Serial.print("P1_raw: ");      Serial.print(P1_raw);      Serial.println(" mV");
+      Serial.print("P2_raw: ");      Serial.print(P2_raw);      Serial.println(" mV");
       Serial.print("Canphu: ");      Serial.println(Canphu);
-      timesensor=millis();
+
+      timesensor = millis();
     }
 
-
-    vTaskDelay(50);
+    vTaskDelay(pdMS_TO_TICKS(50)); // ~20Hz
   }
 }
 
 void ReadADS1()
 {
-  if(is_ads1_init_ok==1)
+  if (is_ads1_init_ok == 1)
   {
-    uint16_t tmp1,tmp2,tmp3,tmp4;
-    tmp1 = ads1.readADC_SingleEnded(0);
-    tmp2 = ads1.readADC_SingleEnded(1);
-    tmp3 = ads1.computeVolts(ads1.readADC_SingleEnded(2)) * 1000;
-    tmp4 = ads1.computeVolts(ads1.readADC_SingleEnded(3)) * 1000;
-    // if(tmp1!=0) 
-    Length_raw = tmp1;
-    // if(tmp2!=0) 
-    Angle_raw = tmp2;
-    // if(tmp3!=0) 
-    P1_raw = tmp3;
-    // if(tmp4!=0) 
-    P2_raw = tmp4;
+    // Dùng float cho kênh cần mV để tránh mất phần thập phân
+    uint16_t tmp1 = ads1.readADC_SingleEnded(0);
+    uint16_t tmp2 = ads1.readADC_SingleEnded(1);
+    float    tmp3 = ads1.computeVolts(ads1.readADC_SingleEnded(2)) * 1000.0f; // mV
+    float    tmp4 = ads1.computeVolts(ads1.readADC_SingleEnded(3)) * 1000.0f; // mV
+
+    // Lọc SMA rất nhẹ (N=4) – không đổi tên biến đầu ra
+    static uint32_t l_buf[4], a_buf[4];
+    static float    p1_buf[4], p2_buf[4];
+    static uint8_t  idx = 0;
+
+    l_buf[idx]  = tmp1;
+    a_buf[idx]  = tmp2;
+    p1_buf[idx] = tmp3;
+    p2_buf[idx] = tmp4;
+
+    idx = (uint8_t)((idx + 1) & 0x03); // vòng 0..3
+
+    uint32_t l_sum = 0, a_sum = 0;
+    float    p1_sum = 0.0f, p2_sum = 0.0f;
+    for (uint8_t i = 0; i < 4; i++) {
+      l_sum  += l_buf[i];
+      a_sum  += a_buf[i];
+      p1_sum += p1_buf[i];
+      p2_sum += p2_buf[i];
+    }
+
+    Length_raw = (uint16_t)(l_sum >> 2);            // chia 4
+    Angle_raw  = (uint16_t)(a_sum >> 2);
+    P1_raw     = (uint16_t)(p1_sum * 0.25f);        // mV -> uint16_t
+    P2_raw     = (uint16_t)(p2_sum * 0.25f);
   }
   else
   {
     Length_raw = 0xFFFF;
-    Angle_raw = 0xFFFF;
-    P1_raw = 0xFFFF;
-    P2_raw = 0xFFFF;
+    Angle_raw  = 0xFFFF;
+    P1_raw     = 0xFFFF;
+    P2_raw     = 0xFFFF;
   }
 }
 
 void ReadADS2()
 {
-  if(is_ads2_init_ok==1)
+  if (is_ads2_init_ok == 1)
   {
-    uint16_t tmp1,tmp2,tmp3,tmp4;
-    tmp1 = ads2.computeVolts(ads2.readADC_SingleEnded(0)) * 1000;
-    tmp2 = ads2.computeVolts(ads2.readADC_SingleEnded(1));
-    tmp3 = ads2.computeVolts(ads2.readADC_SingleEnded(2)) * 1000;
-    tmp4 = ads2.computeVolts(ads2.readADC_SingleEnded(3)) * 1000;
-    // if(tmp1!=0) 
-    P5_raw = tmp1;
-    // if(tmp2!=0) 
-    uc_Voltage = tmp2;
-    // if(tmp3!=0) 
-    P3_raw = tmp3;
-    // if(tmp4!=0) 
-    P4_raw = tmp4;
+    float tmp1 = ads2.computeVolts(ads2.readADC_SingleEnded(0)) * 1000.0f; // mV
+    float tmp2 = ads2.computeVolts(ads2.readADC_SingleEnded(1));           // Volt (chủ đích)
+    float tmp3 = ads2.computeVolts(ads2.readADC_SingleEnded(2)) * 1000.0f; // mV
+    float tmp4 = ads2.computeVolts(ads2.readADC_SingleEnded(3)) * 1000.0f; // mV
+
+    // (Tùy chọn) lọc nhẹ giống trên
+    static float p5_buf[4], u_buf[4], p3_buf[4], p4_buf[4];
+    static uint8_t idx = 0;
+    p5_buf[idx] = tmp1;
+    u_buf[idx]  = tmp2;
+    p3_buf[idx] = tmp3;
+    p4_buf[idx] = tmp4;
+    idx = (uint8_t)((idx + 1) & 0x03);
+
+    float p5=0,u=0,p3=0,p4=0;
+    for (uint8_t i=0;i<4;i++){ p5+=p5_buf[i]; u+=u_buf[i]; p3+=p3_buf[i]; p4+=p4_buf[i]; }
+    p5*=0.25f; u*=0.25f; p3*=0.25f; p4*=0.25f;
+
+    P5_raw    = (uint16_t)p5;   // mV
+    uc_Voltage= u;              // V — giữ nguyên “thiết kế” của bạn
+    P3_raw    = (uint16_t)p3;   // mV
+    P4_raw    = (uint16_t)p4;   // mV
   }
   else
   {
@@ -167,34 +179,90 @@ void ReadADS2()
 
 void ReadInput()
 {
-  DigitalInput_1=!digitalRead(pin_DIN1);
-  DigitalInput_2=!digitalRead(pin_DIN2);
-  DigitalInput_3=!digitalRead(pin_DIN3);
-  DigitalInput_4=!digitalRead(pin_DIN4);
+  // Đọc thô
+  bool d1 = !digitalRead(pin_DIN1);
+  bool d2 = !digitalRead(pin_DIN2);
+  bool d3 = !digitalRead(pin_DIN3);
+  bool d4 = !digitalRead(pin_DIN4);
+
+  // Debounce mềm (SMA 4 mẫu)
+  static uint8_t b1=0, b2=0, b3=0, b4=0;
+  b1 = ((b1 << 1) | (d1 ? 1 : 0)) & 0x0F;
+  b2 = ((b2 << 1) | (d2 ? 1 : 0)) & 0x0F;
+  b3 = ((b3 << 1) | (d3 ? 1 : 0)) & 0x0F;
+  b4 = ((b4 << 1) | (d4 ? 1 : 0)) & 0x0F;
+
+  DigitalInput_1 = (b1 == 0x0F);  // 4 mẫu liên tiếp = 1
+  DigitalInput_2 = (b2 == 0x0F);
+  DigitalInput_3 = (b3 == 0x0F);
+  DigitalInput_4 = (b4 == 0x0F);
 }
+// Median của 3 số (nhẹ, chống spike rất hiệu quả)
+static inline long median3(long a, long b, long c) {
+  long m = a;
+  if ((a <= b && b <= c) || (c <= b && b <= a)) m = b;
+  else if ((b <= c && c <= a) || (a <= c && c <= b)) m = c;
+  return m;
+}
+
 
 void ReadLoadcell1()
 {
-  if (scale1.wait_ready_timeout(100)) 
-  {
-    is_hx7111_init_ok=1;
-    Loadcell1_raw = 0x800000 + scale1.read();
+  const float alpha = 0.20f;   // hệ số lọc IIR (0.1–0.3)
+  long r1, r2, r3;
+
+  if (scale1.wait_ready_timeout(120)) {   // 10SPS → ~120ms, 80SPS thì giảm còn 25ms
+    r1 = scale1.read();
+    scale1.wait_ready_timeout(120);
+    r2 = scale1.read();
+    scale1.wait_ready_timeout(120);
+    r3 = scale1.read();
+
+    // Median của 3 mẫu
+    long m = (r1 > r2) ? ((r2 > r3) ? r2 : (r1 > r3 ? r3 : r1))
+                       : ((r1 > r3) ? r1 : (r2 > r3 ? r3 : r2));
+
+    long raw_offset = 0x800000 + m;
+
+    static float ema = 0; 
+    static bool init = false;
+    if (!init) { ema = raw_offset; init = true; }
+    else { ema = alpha * raw_offset + (1 - alpha) * ema; }
+
+    Loadcell1_raw = (long)ema;
+    is_hx7111_init_ok = 1;
   }
-  else 
-  {
-    is_hx7111_init_ok=0;
+  else {
+    is_hx7111_init_ok = 0;
   }
 }
 
 void ReadLoadcell2()
 {
-  if (scale2.wait_ready_timeout(100)) 
-  {
-    is_hx7112_init_ok=1;
-    Loadcell2_raw = 0x800000 + scale2.read();
+  const float alpha = 0.20f;
+  long r1, r2, r3;
+
+  if (scale2.wait_ready_timeout(120)) {
+    r1 = scale2.read();
+    scale2.wait_ready_timeout(120);
+    r2 = scale2.read();
+    scale2.wait_ready_timeout(120);
+    r3 = scale2.read();
+
+    long m = (r1 > r2) ? ((r2 > r3) ? r2 : (r1 > r3 ? r3 : r1))
+                       : ((r1 > r3) ? r1 : (r2 > r3 ? r3 : r2));
+
+    long raw_offset = 0x800000 + m;
+
+    static float ema = 0;
+    static bool init = false;
+    if (!init) { ema = raw_offset; init = true; }
+    else { ema = alpha * raw_offset + (1 - alpha) * ema; }
+
+    Loadcell2_raw = (long)ema;
+    is_hx7112_init_ok = 1;
   }
-  else 
-  {
-    is_hx7111_init_ok=0;
+  else {
+    is_hx7112_init_ok = 0;
   }
 }
